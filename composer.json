@@ -1,0 +1,24 @@
+{
+    "name": "justcoded/form2email",
+    "require": {
+        "vlucas/valitron": "^1.4",
+        "phpmailer/phpmailer": "^6.0"
+    },
+    "autoload": {
+        "files": [
+            "src/Form2Email/functions.php"
+        ],
+        "psr-4": {
+            "justcoded\\form2email\\": "src/Form2Email/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kostant1985",
+            "email": "kostant21@yahoo.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
