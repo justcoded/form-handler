@@ -4,5 +4,5 @@ namespace justcoded\form2email\Mailer;
 
 interface MailerInterface
 {
-    public function process();
+    public function process($formFields);
 }

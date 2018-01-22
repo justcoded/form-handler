@@ -2,47 +2,100 @@
 
 namespace justcoded\form2email\Mailer;
 
-use justcoded\form2email\App\App;
+use justcoded\form2email\Message\Message;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class PhpMailerSend implements MailerInterface
 {
+    protected $message;
 
-    public function process()
+    protected $host;
+
+    protected $userName;
+
+    protected $password;
+
+    public function __construct($config, Message $message)
+    {
+        if (array_key_exists('host', $config)) {
+            $this->host = $config['host'];
+        }
+
+        if (array_key_exists('user', $config)) {
+            $this->userName = $config['user'];
+        }
+
+        if (array_key_exists('pass', $config)) {
+            $this->password = $config['pass'];
+        }
+
+        $this->message = $message;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserName()
+    {
+        return $this->userName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+
+    public function process($formFields)
     {
         $mail = new PHPMailer(true);                    // Passing `true` enables exceptions
         try {
             //Server settings
             $mail->SMTPDebug = 0;                                 // Enable verbose debug output
             $mail->isSMTP();                                      // Set mailer to use SMTP
-            $mail->Host = App::getMailerHost(); // Specify main and backup SMTP servers
+            $mail->Host = $this->getHost(); // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
-            $mail->Username = App::getMailerUser();                 // SMTP username
-            $mail->Password = '';                           // SMTP password
+            $mail->Username = $this->getUserName();                 // SMTP username
+            $mail->Password = $this->getPassword();                           // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                    // TCP port to connect to
 
             //Recipients
-            $mail->setFrom('kostant21@yahoo.com', 'Mailer');
-            $mail->addAddress('kostant21@yahoo.com', 'Joe User');     // Add a recipient
-            $mail->addReplyTo('info@example.com', 'Information');
-            $mail->addCC('cc@example.com');
-            $mail->addBCC('bcc@example.com');
+            if ($this->message->getFromAddress() != '' && $this->message->getFromName() != '') {
+                $mail->setFrom($this->message->getFromAddress(), $this->message->getFromName());
+            }
+//            $mail->addAddress($this->message->getFrom());     // Add a recipient
+//            $mail->addReplyTo('info@example.com', 'Information');
+
+            if ($this->message->getCcAddress() != '' && $this->message->getBccName() != '') {
+                $mail->addCC($this->message->getCcAddress(), $this->message->getBccName());
+            }
+
+            if ($this->message->getBccAddress() != '' && $this->message->getBccName() != '') {
+                $mail->addBCC($this->message->getBccAddress(), $this->message->getBccName());
+            }
 
             //Attachments
 //            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
 //            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 
-            $template = template(__DIR__. $this->config->getMessageTemplate(), [
-                'name' => 'Hello World!'
-            ]);
-
             //Content
             $mail->isHTML(true);                                  // Set email format to HTML
-            $mail->Subject = $this->config->getMessageSubject();
-            $mail->Body = $template;
-            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            $mail->Subject = $this->message->getSubject();
+            $mail->Body = $this->message->getTemplate($formFields);;
+            $mail->AltBody = $this->message->getAltBody();
 
             $mail->send();
 

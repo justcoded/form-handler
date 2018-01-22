@@ -1,1 +1,2 @@
-{hello} This is the HTML message body <b>in bold!</b>
+<p>{name}</p>
+<p>{email}</p>

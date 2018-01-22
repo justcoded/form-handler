@@ -1,11 +1,12 @@
 <?php
 
 if (!function_exists('template')) {
-    function template ($path, $data){
-        extract($data);
+    function template ($templateName, $data) {
+        $wholePath = __DIR__ . '/../../examples/' . $templateName;
         ob_start();
-        require $path;
+        require $wholePath;
+        $templateString = ob_get_clean();
 
-        return ob_get_clean();
+        return preg_replace("|{(\w*)}|e", '$data["$1"]', $templateString);
     }
 }
