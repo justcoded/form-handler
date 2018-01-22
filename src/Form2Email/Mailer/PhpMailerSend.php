@@ -2,18 +2,12 @@
 
 namespace justcoded\form2email\Mailer;
 
-use justcoded\form2email\Config\Config;
+use justcoded\form2email\App\App;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class PhpMailerSend implements MailerInterface
 {
-    protected $config;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
 
     public function process()
     {
@@ -22,10 +16,10 @@ class PhpMailerSend implements MailerInterface
             //Server settings
             $mail->SMTPDebug = 0;                                 // Enable verbose debug output
             $mail->isSMTP();                                      // Set mailer to use SMTP
-            $mail->Host = 'smtp.gmail.com'; // Specify main and backup SMTP servers
+            $mail->Host = App::getMailerHost(); // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
-            $mail->Username = 'kos1985.dev@gmail.com';                 // SMTP username
-            $mail->Password = 'kos409834';                           // SMTP password
+            $mail->Username = App::getMailerUser();                 // SMTP username
+            $mail->Password = '';                           // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                    // TCP port to connect to
 

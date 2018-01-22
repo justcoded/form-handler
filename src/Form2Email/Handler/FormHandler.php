@@ -2,6 +2,8 @@
 
 namespace justcoded\form2email\Handler;
 
+use justcoded\form2email\App\App;
+use justcoded\form2email\AppConfig\Settings;
 use Valitron\Validator;
 
 class FormHandler
@@ -18,9 +20,9 @@ class FormHandler
 
     protected $formFields = [];
 
-    public function __construct(array $validation, MailHandler $handler, $response = 'json')
+    public function __construct(MailHandler $handler, $response = 'json')
     {
-        $this->validation = $validation;
+        $this->validation = Settings::$validation;
 
         $this->handler = $handler;
 
