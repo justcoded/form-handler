@@ -14,7 +14,7 @@ class MailHandler
     protected $config;
     protected $message;
 
-    public function __construct($config, Message $message)
+    public function __construct(array $config, Message $message)
     {
         $this->config = $config;
         $this->message = $message;

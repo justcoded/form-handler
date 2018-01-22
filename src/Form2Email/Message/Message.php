@@ -18,7 +18,7 @@ class Message
 
     protected $altBody;
 
-    public function __construct($message)
+    public function __construct(array $message)
     {
         foreach($message as $key => $value) {
             $this->$key = $value;

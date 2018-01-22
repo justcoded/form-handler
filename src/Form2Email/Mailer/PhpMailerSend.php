@@ -16,7 +16,7 @@ class PhpMailerSend implements MailerInterface
 
     protected $password;
 
-    public function __construct($config, Message $message)
+    public function __construct(array $config, Message $message)
     {
         if (array_key_exists('host', $config)) {
             $this->host = $config['host'];

@@ -19,7 +19,7 @@ class FormHandler
 
     protected $formFields;
 
-    public function __construct($validation, MailerInterface $handler, $response = 'json')
+    public function __construct(array $validation, MailerInterface $handler, string $response = 'json')
     {
         $this->validation = $validation;
 
