@@ -6,10 +6,10 @@
     },
     "autoload": {
         "files": [
-            "src/Form2Email/functions.php"
+            "src/functions.php"
         ],
         "psr-4": {
-            "justcoded\\form2email\\": "src/Form2Email/"
+            "justcoded\\form2email\\": "src/"
         }
     },
     "license": "MIT",

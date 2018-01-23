@@ -2,9 +2,14 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use justcoded\form2email\Handler\FormHandler;
+
+use justcoded\form2email\FormHandler;
 use justcoded\form2email\Handler\MailHandler;
 use justcoded\form2email\Message\Message;
+
+/*
+ini_set('display_errors', 1);
+error_reporting(E_ALL);*/
 
 $validation  = [
     'rules' => [
@@ -43,7 +48,7 @@ $message = [
 
 $mailerHandler = new MailHandler($mailerConfig, new Message($message));
 
-$formHandler = new FormHandler($validation, $mailerHandler->getMailer());
+$formHandler = new FormHandler($validation, $mailerHandler);
 
 if ($formHandler->validate($_POST)) {
     $formHandler->process();

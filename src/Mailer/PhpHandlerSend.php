@@ -2,11 +2,12 @@
 
 namespace justcoded\form2email\Mailer;
 
+
 use justcoded\form2email\Message\Message;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class PhpMailerSend implements MailerInterface
+class PhpHandlerSend
 {
     protected $message;
 
@@ -58,7 +59,7 @@ class PhpMailerSend implements MailerInterface
     }
 
 
-    public function process($formFields)
+    public function send($formFields)
     {
         $mail = new PHPMailer(true);                    // Passing `true` enables exceptions
         try {
@@ -94,7 +95,7 @@ class PhpMailerSend implements MailerInterface
             //Content
             $mail->isHTML(true);                                  // Set email format to HTML
             $mail->Subject = $this->message->getSubject();
-            $mail->Body = $this->message->getTemplate($formFields);;
+            $mail->Body = $this->message->getTemplate($formFields);
             $mail->AltBody = $this->message->getAltBody();
 
             $mail->send();

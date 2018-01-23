@@ -1,8 +1,9 @@
 <?php
 
-namespace justcoded\form2email\Handler;
+namespace justcoded\form2email;
 
-use justcoded\form2email\Mailer\MailerInterface;
+
+use justcoded\form2email\Handler\HandlerInterface;
 use Valitron\Validator;
 
 class FormHandler
@@ -19,7 +20,7 @@ class FormHandler
 
     protected $formFields;
 
-    public function __construct(array $validation, MailerInterface $handler, string $response = 'json')
+    public function __construct(array $validation, HandlerInterface $handler, string $response = 'json')
     {
         $this->validation = $validation;
 
