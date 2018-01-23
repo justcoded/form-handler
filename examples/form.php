@@ -43,9 +43,7 @@ $message = [
 
 $mailerHandler = new MailHandler($mailerConfig, new Message($message));
 
-$mailer = $mailerHandler->getMailer();
-
-$formHandler = new FormHandler($validation, $mailer);
+$formHandler = new FormHandler($validation, $mailerHandler->getMailer());
 
 if ($formHandler->validate($_POST)) {
     $formHandler->process();
