@@ -31,15 +31,15 @@ $validation = [
 $mailerConfig = [
 	'mailer'   => MailHandler::USE_PHPMAILER, // (or USE_POSTMARKAPP, USE_MANDRILL)
 	'host'     => 'smtp.gmail.com',
-	'user'     => 'kos1985.dev@gmail.com',
-	'password' => 'kos409834',
+	'user'     => 'YOUR EMAIL',
+	'password' => 'YOUR PASSWORD',
 	'protocol' => 'tls',
 	'port'     => 587,
 ];
 
 $message = [
-	'from'    => ['kostant21@yahoo.com' => 'kosFrom'],
-	'to'      => ['alexp.test1@gmail.com' => 'Alex'],
+	'from'    => ['FROM EMAIL' => 'FROM NAME'],
+	'to'      => ['TO EMAIL' => 'TO NAME'],
 //	'cc'      => ['email' => 'name'],
 //	'bcc'     => ['email' => 'name'],
 	'subject' => 'Contact request from {name}',
