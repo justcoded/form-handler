@@ -1,5 +1,5 @@
 {
-    "name": "justcoded/form2email",
+    "name": "justcoded/form-handler",
     "require": {
         "vlucas/valitron": "^1.4",
         "phpmailer/phpmailer": "^6.0"
@@ -9,14 +9,14 @@
             "src/functions.php"
         ],
         "psr-4": {
-            "justcoded\\form2email\\": "src/"
+            "JustCoded\\FormHandler\\": "src/"
         }
     },
     "license": "MIT",
     "authors": [
         {
-            "name": "kostant1985",
-            "email": "kostant21@yahoo.com"
+            "name": "JustCoded",
+            "email": "hello@justcoded.com"
         }
     ],
     "minimum-stability": "dev",

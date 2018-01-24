@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fc7e45a078e7ab57f2e32fc9bb654465",
-    "content-hash": "67b57c9f7e373c7b11f3c8290dbd039d",
+    "content-hash": "95095432f505566fa2ecc6a3203bdfec",
     "packages": [
         {
             "name": "phpmailer/phpmailer",
@@ -71,7 +70,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2018-01-05 13:19:58"
+            "time": "2018-01-05T13:19:58+00:00"
         },
         {
             "name": "vlucas/valitron",
@@ -117,7 +116,7 @@
                 "validation",
                 "validator"
             ],
-            "time": "2017-10-30 23:15:06"
+            "time": "2017-10-30T23:15:06+00:00"
         }
     ],
     "packages-dev": [],

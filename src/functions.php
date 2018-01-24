@@ -1,17 +1,20 @@
 <?php
 
-if (!function_exists('template')) {
-    function template ($templateName, $data) {
-        $wholePath = __DIR__ . '/../examples/' . $templateName;
-        ob_start();
-        require $wholePath;
-        $templateString = ob_get_clean();
+if (! function_exists('render_template')) {
+	function render_template($template, $data)
+	{
+		if (! is_file($template)) {
+			throw new Exception('Unable to find template file: ' . $template);
+		}
 
-//        return preg_replace("|{(\w*)}|e", '$data["$1"]', $templateString);
-        foreach ($data as $key => $field) {
-            $templateString = str_replace('{' . $key . '}', $field,$templateString);
-        }
+		ob_start();
+		require $template;
+		$content = ob_get_clean();
 
-        return $templateString;
-    }
+		foreach ($data as $key => $field) {
+			$content = str_replace('{' . $key . '}', $field, $content);
+		}
+
+		return $content;
+	}
 }
