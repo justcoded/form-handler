@@ -1,15 +1,15 @@
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
+// enable errors =>  debug mode.
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+// init autoload.
+require __DIR__.'/../vendor/autoload.php';
 
 use justcoded\form2email\FormHandler;
 use justcoded\form2email\Handler\MailHandler;
 use justcoded\form2email\Message\Message;
-
-/*
-ini_set('display_errors', 1);
-error_reporting(E_ALL);*/
 
 $validation  = [
     'rules' => [
