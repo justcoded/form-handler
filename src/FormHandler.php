@@ -4,22 +4,47 @@ namespace justcoded\form2email;
 
 
 use justcoded\form2email\Handler\HandlerInterface;
+use justcoded\form2email\Message\Message;
 use Valitron\Validator;
 
 class FormHandler
 {
+    /**
+     * @var array
+     */
     protected $validation;
 
+    /**
+     * @var HandlerInterface
+     */
     protected $handler;
 
+    /**
+     * @var string
+     */
     protected $response;
 
+    /**
+     * @var array
+     */
     protected $errors = [];
 
+    /**
+     * @var int
+     */
     protected $status = 0;
 
+    /**
+     * @var array
+     */
     protected $formFields;
 
+    /**
+     * FormHandler constructor.
+     * @param array $validation
+     * @param HandlerInterface $handler
+     * @param string $response
+     */
     public function __construct(array $validation, HandlerInterface $handler, string $response = 'json')
     {
         $this->validation = $validation;
@@ -29,6 +54,10 @@ class FormHandler
         $this->response = $response;
     }
 
+    /**
+     * @param $post
+     * @return bool
+     */
     public function validate($post)
     {
         $this->formFields = $post;
@@ -50,11 +79,17 @@ class FormHandler
         }
     }
 
-    public function process()
+    /**
+     * @param Message $message
+     */
+    public function process(Message $message)
     {
-        $this->handler->process($this->formFields);// sending email
+        $this->handler->process($this->formFields, $message);// sending email
     }
 
+    /**
+     * @return array
+     */
     public function response()
     {
         return [

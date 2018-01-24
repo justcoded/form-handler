@@ -4,20 +4,45 @@ namespace justcoded\form2email\Message;
 
 class Message
 {
+    /**
+     * @var array
+     */
     protected $from;
 
+    /**
+     * @var array
+     */
     protected $to;
 
+    /**
+     * @var array
+     */
     protected $cc;
 
+    /**
+     * @var array
+     */
     protected $bcc;
 
+    /**
+     * @var string
+     */
     protected $subject;
 
+    /**
+     * @var string
+     */
     protected $body;
 
+    /**
+     * @var string
+     */
     protected $altBody;
 
+    /**
+     * Message constructor.
+     * @param array $message
+     */
     public function __construct(array $message)
     {
         foreach($message as $key => $value) {
@@ -33,11 +58,17 @@ class Message
         return $this->from;
     }
 
+    /**
+     * @return mixed
+     */
     public function getFromAddress()
     {
         return $this->from[0];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFromName()
     {
         return $this->from[1];
@@ -51,11 +82,17 @@ class Message
         return $this->to;
     }
 
+    /**
+     * @return mixed
+     */
     public function getToAddress()
     {
         return $this->to[0];
     }
 
+    /**
+     * @return mixed
+     */
     public function getToName()
     {
         return $this->to[1];
@@ -69,11 +106,17 @@ class Message
         return $this->cc;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCcAddress()
     {
         return $this->cc[0];
     }
 
+    /**
+     * @return mixed
+     */
     public function getCcName()
     {
         return $this->cc[1];
@@ -87,11 +130,17 @@ class Message
         return $this->bcc;
     }
 
+    /**
+     * @return mixed
+     */
     public function getBccAddress()
     {
         return $this->bcc[0];
     }
 
+    /**
+     * @return mixed
+     */
     public function getBccName()
     {
         return $this->bcc[1];
@@ -128,5 +177,4 @@ class Message
     {
         return $this->altBody;
     }
-
 }
