@@ -2,38 +2,36 @@
 
 namespace justcoded\form2email\Handler;
 
+use justcoded\form2email\DataObject\DataObject;
 use justcoded\form2email\Mailer\PhpHandlerSend;
 use justcoded\form2email\Message\Message;
 
-class MailHandler implements HandlerInterface
+class MailHandler extends DataObject implements HandlerInterface
 {
     const USE_PHPMAILER = 1;
     const USE_POSTMARKAPP = 2;
     const USE_MANDRILL = 3;
 
-    protected $config;
-    protected $message;
-
-    public function __construct(array $config, Message $message)
-    {
-        $this->config = $config;
-        $this->message = $message;
-    }
-
+    /**
+     * @return PhpHandlerSend
+     * @throws \Exception
+     */
     public function getMailer()
     {
-        $mailerId = $this->config['mailer'];
-
-        switch ($mailerId) {
+        switch ($this->getMailerId()) {
             case self::USE_PHPMAILER:
-                return new PhpHandlerSend($this->config, $this->message);
+                return new PhpHandlerSend($this->config);
         }
 
         throw new \Exception('Bad config');
     }
 
-    public function process($data)
+    /**
+     * @param $data
+     * @param Message $message
+     */
+    public function process($data, Message $message)
     {
-        $this->getMailer()->send($data);
+        $this->getMailer()->send($data, $message);
     }
 }

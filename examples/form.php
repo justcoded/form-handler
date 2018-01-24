@@ -7,9 +7,8 @@ use justcoded\form2email\FormHandler;
 use justcoded\form2email\Handler\MailHandler;
 use justcoded\form2email\Message\Message;
 
-/*
-ini_set('display_errors', 1);
-error_reporting(E_ALL);*/
+
+//ini_set('display_errors', 1);
 
 $validation  = [
     'rules' => [
@@ -32,7 +31,7 @@ $mailerConfig = [
     'mailer' => MailHandler::USE_PHPMAILER, // (or USE_POSTMARKAPP, USE_MANDRILL)
     'host' => 'smtp.gmail.com',
     'user' => 'kos1985.dev@gmail.com',
-    'pass' => '',
+    'password' => 'kos409834',
 ];
 
 $message = [
@@ -46,12 +45,12 @@ $message = [
 ];
 
 
-$mailerHandler = new MailHandler($mailerConfig, new Message($message));
+$mailerHandler = new MailHandler($mailerConfig);
 
 $formHandler = new FormHandler($validation, $mailerHandler);
 
 if ($formHandler->validate($_POST)) {
-    $formHandler->process();
+    $formHandler->process(new Message($message));
 }
 
 echo json_encode($formHandler->response());
