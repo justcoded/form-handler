@@ -163,9 +163,10 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @param array $formFields
+     * @return mixed|string
      */
-    public function getTemplate($formFields)
+    public function getTemplate(array $formFields)
     {
         return template($this->body, $formFields);
     }

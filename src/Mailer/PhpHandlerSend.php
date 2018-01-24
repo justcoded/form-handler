@@ -10,6 +10,11 @@ use PHPMailer\PHPMailer\Exception;
 class PhpHandlerSend extends DataObject
 {
 
+    /**
+     * @param $formFields
+     * @param Message $message
+     * @return bool
+     */
     public function send($formFields, Message $message)
     {
         $mail = new PHPMailer(true);                    // Passing `true` enables exceptions
@@ -55,5 +60,7 @@ class PhpHandlerSend extends DataObject
         } catch (Exception $e) {
             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
         }
+
+        return false;
     }
 }
