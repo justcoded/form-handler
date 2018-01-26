@@ -4,7 +4,7 @@ namespace JustCoded\FormHandler\DataObjects;
 
 class MailMessage extends DataObject
 {
-    const ATTACHMENTS_SIZE_LIMIT = 10;
+    const ATTACHMENTS_SIZE_LIMIT = 8000000;
 
 	/**
 	 * @var EmailAddress
@@ -186,52 +186,83 @@ class MailMessage extends DataObject
 
 	public function setFiles()
     {
+        $uploadFolder = $this->getFullPathOfUploadFolder();
+
+        if (!file_exists($uploadFolder)) {
+            mkdir($uploadFolder, 0777, true);
+        }
+
         foreach ($this->attachments as $file)
         {
-            $path = $this->getFullPathOfUploadFolder() . DIRECTORY_SEPARATOR . $file->name;
             /** @var File $file */
+            $path = $this->getFullPathOfUploadFolder() . DIRECTORY_SEPARATOR . $file->uniqName;
+            @chmod($path, 0666 & ~umask());
+
             if (move_uploaded_file($file->tmp_name, $path)) {
 
                 if ($file->size > self::ATTACHMENTS_SIZE_LIMIT) {
-                    $domainPath = $_SERVER['HTTP_ORIGIN'] . $this->getWebUploadFolder() .DIRECTORY_SEPARATOR . $file->name;
+                    $domainPath = $_SERVER['HTTP_ORIGIN'] . $this->getWebUploadFolder() .DIRECTORY_SEPARATOR . $file->uniqName;
                     $this->addFileLink([$domainPath => $file->name]);
                 } else {
                     $this->addFile([$path => $file->name]);
                 }
             }
         }
+
+        return true;
     }
 
+    /**
+     * @return array
+     */
     public function getFiles()
     {
         return $this->files;
     }
 
+    /**
+     * @param $data
+     */
     protected function addFile($data)
     {
         $this->files[] = new EmailAttachment($data);
     }
 
+    /**
+     * @param $data
+     */
     protected function addFileLink($data)
     {
         $this->fileLinks[] = new EmailAttachment($data);
     }
 
+    /**
+     * @return array
+     */
     public function getFileLinks()
     {
         return $this->fileLinks;
     }
 
+    /**
+     * @return string
+     */
     protected function getFullPathOfUploadFolder()
     {
         return __DIR__ . $this->getUploadFolder();
     }
 
+    /**
+     * @return string
+     */
     protected function getUploadFolder()
     {
         return '/../../examples' . $this->getWebUploadFolder();
     }
 
+    /**
+     * @return string
+     */
     protected function getWebUploadFolder()
     {
         return '/attachments';

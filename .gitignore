@@ -31,4 +31,5 @@ tests/_support/_generated
 
 # any root PHP files
 /*.php
-/examples/attachments/
+/examples/attachments/*
+!examples/attachments/.gitkeep

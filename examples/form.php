@@ -25,7 +25,7 @@ $validation = [
         'file' => [
             'fields' => ['cv_file', 'image_file'],
             'allowType' => ['jpeg', 'jpg', 'pdf', 'png'],
-            'allowSize' => 10000
+            'allowSize' => 10000000 //10 MB
         ]
 	], // acoording to Valitron doc.
 	'labels' => [
