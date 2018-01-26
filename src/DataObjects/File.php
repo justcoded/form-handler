@@ -36,6 +36,16 @@ class File extends DataObject
     public $uniqName;
 
     /**
+     * @var string
+     */
+    public $uploadUrl;
+
+    /**
+     * @var string
+     */
+    public $uploadPath;
+
+    /**
      * File constructor.
      * @param array $config
      */
@@ -52,5 +62,10 @@ class File extends DataObject
     public function getExtension()
     {
         return pathinfo($this->name, PATHINFO_EXTENSION);
+    }
+
+    public function __toString()
+    {
+        return $this->uploadUrl;
     }
 }

@@ -43,6 +43,12 @@ $mailerConfig = [
 	'port'     => 587,
 ];
 
+$fileManager = new FileManager([
+        'uploadPath' => __DIR__ . '/attachments',
+        'uploadUrl' => $_SERVER['HTTP_ORIGIN'] . '/attachments',
+    ]
+);
+
 $message = [
 	'from'    => ['hello@justcoded.co.uk' => 'FROM NAME'],
 	'to'      => ['kostant21@yahoo.com' => 'TO NAME'],
@@ -51,7 +57,7 @@ $message = [
 	'subject' => 'Contact request from {name}',
 	'bodyTemplate'    => __DIR__ . '/template-html.php',
 	'altBodyTemplate' => __DIR__ . '/template-plain.php',
-    'attachments' => FileManager::prepareUpload([
+    'attachments' => $fileManager->upload([
         'cv_file', 'image_file'
     ])
 ];
