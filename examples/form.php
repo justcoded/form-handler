@@ -37,8 +37,8 @@ $validation = [
 $mailerConfig = [
 	'mailer'   => MailHandler::USE_PHPMAILER, // (or USE_POSTMARKAPP, USE_MANDRILL)
 	'host'     => 'smtp.gmail.com',
-	'user'     => 'kos1985.dev@gmail.com',
-	'password' => '',
+	'user'     => 'YOUR EMAIL',
+	'password' => 'YOUR PASSWORD',
 	'protocol' => 'tls',
 	'port'     => 587,
 ];
