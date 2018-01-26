@@ -3,6 +3,7 @@
 namespace JustCoded\FormHandler;
 
 
+use JustCoded\FormHandler\DataObjects\File;
 use JustCoded\FormHandler\Handlers\HandlerInterface;
 use Valitron\Validator;
 
@@ -58,6 +59,21 @@ class FormHandler
 	{
 		$this->formFields = $data;
 		$v                = new Validator($data);
+
+        $v::addRule('file', function($field, $value, array $params, array $fields) {
+            /**
+             * @var File $file
+             */
+            $file = $value[0];
+
+            if ($file->size >= $this->rules['rules']['file']['allowSize']) {
+                return false;
+            } elseif (! in_array($file->getExtension(), $this->rules['rules']['file']['allowType'])) {
+                return false;
+            }
+
+            return true;
+        }, 'file error');
 
 		// create rules from input array.
 		foreach ($this->rules['rules'] as $key => $params) {

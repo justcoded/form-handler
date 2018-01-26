@@ -4,6 +4,8 @@ namespace JustCoded\FormHandler\DataObjects;
 
 class MailMessage extends DataObject
 {
+    const ATTACHMENTS_SIZE_LIMIT = 10;
+
 	/**
 	 * @var EmailAddress
 	 */
@@ -53,6 +55,21 @@ class MailMessage extends DataObject
 	 * @var array
 	 */
 	protected $tokens;
+
+    /**
+     * @var array
+     */
+	protected $attachments = [];
+
+    /**
+     * @var array
+     */
+	protected $files = [];
+
+    /**
+     * @var array
+     */
+	protected $fileLinks = [];
 
 	/**
 	 * Message constructor.
@@ -149,7 +166,7 @@ class MailMessage extends DataObject
 		if (!empty($this->body)) {
 			return $this->body;
 		} elseif (!empty($this->bodyTemplate)) {
-			return render_template($this->bodyTemplate, $this->tokens);
+			return render_template($this->bodyTemplate, $this->tokens, $this->fileLinks);
 		} else {
 			return null;
 		}
@@ -163,7 +180,60 @@ class MailMessage extends DataObject
 		if (!empty($this->altBody)) {
 			return $this->altBody;
 		} else {
-			return render_template($this->altBodyTemplate, $this->tokens);
+			return render_template($this->altBodyTemplate, $this->tokens, $this->fileLinks);
 		}
 	}
+
+	public function setFiles()
+    {
+        foreach ($this->attachments as $file)
+        {
+            $path = $this->getFullPathOfUploadFolder() . DIRECTORY_SEPARATOR . $file->name;
+            /** @var File $file */
+            if (move_uploaded_file($file->tmp_name, $path)) {
+
+                if ($file->size > self::ATTACHMENTS_SIZE_LIMIT) {
+                    $domainPath = $_SERVER['HTTP_ORIGIN'] . $this->getWebUploadFolder() .DIRECTORY_SEPARATOR . $file->name;
+                    $this->addFileLink([$domainPath => $file->name]);
+                } else {
+                    $this->addFile([$path => $file->name]);
+                }
+            }
+        }
+    }
+
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    protected function addFile($data)
+    {
+        $this->files[] = new EmailAttachment($data);
+    }
+
+    protected function addFileLink($data)
+    {
+        $this->fileLinks[] = new EmailAttachment($data);
+    }
+
+    public function getFileLinks()
+    {
+        return $this->fileLinks;
+    }
+
+    protected function getFullPathOfUploadFolder()
+    {
+        return __DIR__ . $this->getUploadFolder();
+    }
+
+    protected function getUploadFolder()
+    {
+        return '/../../examples' . $this->getWebUploadFolder();
+    }
+
+    protected function getWebUploadFolder()
+    {
+        return '/attachments';
+    }
 }

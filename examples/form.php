@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 // init autoload.
 require __DIR__ . '/../vendor/autoload.php';
 
+use JustCoded\FormHandler\FileManager\FileManager;
 use JustCoded\FormHandler\FormHandler;
 use JustCoded\FormHandler\Handlers\MailHandler;
 use JustCoded\FormHandler\DataObjects\MailMessage;
@@ -20,7 +21,12 @@ $validation = [
 		'email'    => [
 			'fields'  => ['email'],
 			'message' => '{field} is not a valid email address'
-		]
+		],
+        'file' => [
+            'fields' => ['cv_file', 'image_file'],
+            'allowType' => ['jpeg', 'jpg', 'pdf', 'png'],
+            'allowSize' => 10000
+        ]
 	], // acoording to Valitron doc.
 	'labels' => [
 		'name'  => 'Name',
@@ -31,20 +37,23 @@ $validation = [
 $mailerConfig = [
 	'mailer'   => MailHandler::USE_PHPMAILER, // (or USE_POSTMARKAPP, USE_MANDRILL)
 	'host'     => 'smtp.gmail.com',
-	'user'     => 'YOUR EMAIL',
-	'password' => 'YOUR PASSWORD',
+	'user'     => 'kos1985.dev@gmail.com',
+	'password' => '',
 	'protocol' => 'tls',
 	'port'     => 587,
 ];
 
 $message = [
-	'from'    => ['FROM EMAIL' => 'FROM NAME'],
-	'to'      => ['TO EMAIL' => 'TO NAME'],
+	'from'    => ['hello@justcoded.co.uk' => 'FROM NAME'],
+	'to'      => ['kostant21@yahoo.com' => 'TO NAME'],
 //	'cc'      => ['email' => 'name'],
 //	'bcc'     => ['email' => 'name'],
 	'subject' => 'Contact request from {name}',
 	'bodyTemplate'    => __DIR__ . '/template-html.php',
 	'altBodyTemplate' => __DIR__ . '/template-plain.php',
+    'attachments' => FileManager::prepareUpload([
+        'cv_file', 'image_file'
+    ])
 ];
 
 

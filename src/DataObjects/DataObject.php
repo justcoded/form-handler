@@ -8,7 +8,7 @@ abstract class DataObject
 	{
 		foreach ($config as $key => $value) {
 			if (property_exists($this, $key)) {
-				$this->$key = $value;
+				$this->{$key} = $value;
 			} else {
 				throw new \Exception('Property "' . $key . '" doesn\'t exists in ' . get_class($this));
 			}

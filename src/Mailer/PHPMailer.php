@@ -3,6 +3,7 @@
 namespace JustCoded\FormHandler\Mailer;
 
 use JustCoded\FormHandler\DataObjects\DataObject;
+use JustCoded\FormHandler\DataObjects\EmailAttachment;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 use PHPMailer\PHPMailer\PHPMailer as PHPMailerLib;
 use PHPMailer\PHPMailer\Exception as PhpMailerException;
@@ -85,6 +86,14 @@ class PHPMailer extends DataObject implements MailerInterface
 				}
 
 			}
+
+            //Attachments
+            if ($attachments = $message->getFiles()) {
+                foreach ($attachments as $attachment) {
+                    /** @var EmailAttachment $attachment */
+                    $mail->addAttachment($attachment->getPath(), $attachment->getName());    // Optional name
+                }
+            }
 
 			// Content.
 			$mail->Subject = $message->getSubject();
