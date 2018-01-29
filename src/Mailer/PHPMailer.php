@@ -3,13 +3,20 @@
 namespace JustCoded\FormHandler\Mailer;
 
 use JustCoded\FormHandler\DataObjects\DataObject;
-use JustCoded\FormHandler\DataObjects\EmailAttachment;
+use JustCoded\FormHandler\DataObjects\File;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 use PHPMailer\PHPMailer\PHPMailer as PHPMailerLib;
 use PHPMailer\PHPMailer\Exception as PhpMailerException;
 
 class PHPMailer extends DataObject implements MailerInterface
 {
+	/**
+	 * Attachments size limit
+	 *
+	 * @var int
+	 */
+	protected $attachmentsSizeLimit = 8000000;
+
 	/**
 	 * The user's host
 	 *
@@ -108,13 +115,15 @@ class PHPMailer extends DataObject implements MailerInterface
 
 			// Attachments.
 			if ($attachments = $message->getFiles()) {
-				foreach ($attachments as $attachment) {
-					/**
-					 * Email attachments
-					 *
-					 * @var EmailAttachment $attachment
-					 */
-					$mail->addAttachment($attachment->getPath(), $attachment->getName()); // Optional name.
+				if ($message->getTotalFilesSize() < $this->attachmentsSizeLimit) {
+					foreach ($attachments as $attachment) {
+						/**
+						 * Email attachments
+						 *
+						 * @var File $attachment
+						 */
+						$mail->addAttachment($attachment->uploadPath, $attachment->name); // Optional name.
+					}
 				}
 			}
 

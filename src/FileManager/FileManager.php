@@ -50,12 +50,12 @@ class FileManager extends DataObject
 				/**
 				 * File Object
 				 *
-				 * @varFile $file
+				 * @var File $file
 				 */
-				$path = realpath($this->uploadPath) . '/' . $name . $file->uniqName;
+				$path = realpath($this->uploadPath) . '/' . $name . $file->uniqueName;
 
 				if ($file->error == 0 && move_uploaded_file($file->tmp_name, $path)) {
-					$file->uploadUrl = $this->uploadUrl . '/' . $name . $file->uniqName;
+					$file->uploadUrl = $this->uploadUrl . '/' . $name . $file->uniqueName;
 					$file->uploadPath = $path;
 					$_POST[$field] = $file;
 					$files[] = $file;

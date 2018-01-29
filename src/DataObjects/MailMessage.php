@@ -9,7 +9,6 @@ namespace JustCoded\FormHandler\DataObjects;
  */
 class MailMessage extends DataObject
 {
-	const ATTACHMENTS_SIZE_LIMIT = 8000000;
 
 	/**
 	 * Property with From email
@@ -247,9 +246,7 @@ class MailMessage extends DataObject
 			 *
 			 * @var File $file
 			 */
-			if ($file->size < self::ATTACHMENTS_SIZE_LIMIT) {
-				$this->addFile([$file->uploadPath => $file->name]);
-			}
+			$this->addFile($file);
 		}
 
 		return true;
@@ -266,13 +263,33 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Add EmailAttachments data to files array
+	 * Add files to array
 	 *
-	 * @param array $data File data with ['uploadPath' => name]
+	 * @param File $file File data with ['uploadPath' => name]
 	 */
-	protected function addFile(array $data)
+	protected function addFile(File $file)
 	{
-		$this->files[] = new EmailAttachment($data);
+		$this->files[] = $file;
+	}
+
+	/**
+	 * Getting total size of attached files
+	 */
+	public function getTotalFilesSize()
+	{
+		$totalSize = 0;
+		if (count($this->getFiles()) > 0) {
+			foreach ($this->getFiles() as $file) {
+				/**
+				 * File
+				 *
+				 * @var File $file
+				 */
+				$totalSize = $totalSize + $file->size;
+			}
+		}
+
+		return $totalSize;
 	}
 
 }
