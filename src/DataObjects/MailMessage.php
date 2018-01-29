@@ -234,52 +234,13 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Setting attachments file
-	 *
-	 * @return bool
-	 */
-	public function setFiles()
-	{
-		foreach ($this->attachments as $file) {
-			/**
-			 * File object
-			 *
-			 * @var File $file
-			 */
-			$this->addFile($file);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Getting attachments file
-	 *
-	 * @return array
-	 */
-	public function getFiles()
-	{
-		return $this->files;
-	}
-
-	/**
-	 * Add files to array
-	 *
-	 * @param File $file File data with ['uploadPath' => name]
-	 */
-	protected function addFile(File $file)
-	{
-		$this->files[] = $file;
-	}
-
-	/**
 	 * Getting total size of attached files
 	 */
 	public function getTotalFilesSize()
 	{
 		$totalSize = 0;
-		if (count($this->getFiles()) > 0) {
-			foreach ($this->getFiles() as $file) {
+		if (count($this->attachments) > 0) {
+			foreach ($this->attachments as $file) {
 				/**
 				 * File
 				 *
