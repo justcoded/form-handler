@@ -83,7 +83,7 @@ class MailMessage extends DataObject
 	/**
 	 * List of attachments
 	 *
-	 * @var array
+	 * @var File[]|null
 	 */
 	protected $attachments = [];
 
@@ -253,13 +253,13 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Getting attachments file
+	 * Getting attachments files
 	 *
-	 * @return array
+	 * @return File[]|null
 	 */
-	public function getFiles()
+	public function getAttachments()
 	{
-		return $this->files;
+		return $this->attachments;
 	}
 
 	/**
@@ -275,18 +275,15 @@ class MailMessage extends DataObject
 	/**
 	 * Getting total size of attached files
 	 */
-	public function getTotalFilesSize()
+	public function getAttachmentsSize()
 	{
+		if (empty($this->attachments)) {
+			return 0;
+		}
+
 		$totalSize = 0;
-		if (count($this->getFiles()) > 0) {
-			foreach ($this->getFiles() as $file) {
-				/**
-				 * File
-				 *
-				 * @var File $file
-				 */
-				$totalSize = $totalSize + $file->size;
-			}
+		foreach ($this->attachments as $file) {
+			$totalSize += $file->size;
 		}
 
 		return $totalSize;
