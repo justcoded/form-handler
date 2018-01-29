@@ -1,19 +1,35 @@
 <?php
 namespace JustCoded\FormHandler\DataObjects;
 
+/**
+ * Class EmailAddress
+ *
+ * @package JustCoded\FormHandler\DataObjects
+ */
 class EmailAddress
 {
 	/**
+	 * Email
+	 *
 	 * @var string
 	 */
 	protected $email;
 
 	/**
+	 * Name
+	 *
 	 * @var string
 	 */
 	protected $name;
 
-	public function __construct($data)
+	/**
+	 * EmailAddress constructor.
+	 *
+	 * @param array $data Email data
+	 *
+	 * @throws \Exception Exception if data is blank.
+	 */
+	public function __construct(array $data)
 	{
 		if (empty($data)) {
 			throw new \Exception('Email Address can\'t be blank');
@@ -37,6 +53,8 @@ class EmailAddress
 	}
 
 	/**
+	 * Getting Email
+	 *
 	 * @return string
 	 */
 	public function getEmail()
@@ -45,6 +63,8 @@ class EmailAddress
 	}
 
 	/**
+	 * Getting Name
+	 *
 	 * @return string
 	 */
 	public function getName()
@@ -53,6 +73,8 @@ class EmailAddress
 	}
 
 	/**
+	 * Getting formatted address
+	 *
 	 * @return string
 	 */
 	public function getFormattedAddress()

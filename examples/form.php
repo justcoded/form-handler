@@ -70,4 +70,3 @@ if ($formHandler->validate($_POST)) {
 }
 
 echo json_encode($formHandler->response());
-

@@ -2,34 +2,48 @@
 
 namespace JustCoded\FormHandler;
 
-
 use JustCoded\FormHandler\Handlers\HandlerInterface;
 use Valitron\Validator;
 use JustCoded\FormHandler\Validator\File as FileValidator;
 
+/**
+ * Class FormHandler
+ *
+ * @package JustCoded\FormHandler
+ */
 class FormHandler
 {
 	/**
+	 * Form validation rules
+	 *
 	 * @var array
 	 */
 	protected $rules;
 
 	/**
+	 * MailHandler
+	 *
 	 * @var HandlerInterface
 	 */
 	protected $handler;
 
 	/**
+	 * Response output format, by default 'json'
+	 *
 	 * @var string
 	 */
 	protected $response;
 
 	/**
+	 * List of errors
+	 *
 	 * @var array
 	 */
 	protected $errors = [];
 
 	/**
+	 * Handled form fiels
+	 *
 	 * @var array
 	 */
 	protected $formFields;
@@ -37,9 +51,9 @@ class FormHandler
 	/**
 	 * FormHandler constructor.
 	 *
-	 * @param array            $validationRules
-	 * @param HandlerInterface $handler
-	 * @param string           $response
+	 * @param array $validationRules validation rules
+	 * @param HandlerInterface $handler Mailer
+	 * @param string $response Output format
 	 */
 	public function __construct(array $validationRules, HandlerInterface $handler, string $response = 'json')
 	{
@@ -51,11 +65,13 @@ class FormHandler
 	}
 
 	/**
-	 * @param $data
+	 * Validate form data
+	 *
+	 * @param array $data Array with Global variaable _POST
 	 *
 	 * @return bool
 	 */
-	public function validate($data)
+	public function validate(array $data)
 	{
 		$this->formFields = $data;
 		$v                = new Validator($data);
@@ -91,6 +107,8 @@ class FormHandler
 	}
 
 	/**
+	 * Method for returning a response
+	 *
 	 * @return array
 	 */
 	public function response()

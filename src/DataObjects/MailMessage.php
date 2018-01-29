@@ -12,61 +12,85 @@ class MailMessage extends DataObject
 	const ATTACHMENTS_SIZE_LIMIT = 8000000;
 
 	/**
+	 * Property with From email
+	 *
 	 * @var EmailAddress
 	 */
 	protected $from;
 
 	/**
+	 * Property with To email
+	 *
 	 * @var EmailAddress[]
 	 */
 	protected $to;
 
 	/**
+	 * Property with Cc email
+	 *
 	 * @var EmailAddress[]
 	 */
 	protected $cc;
 
 	/**
+	 * Property with Bcc email
+	 *
 	 * @var EmailAddress[]
 	 */
 	protected $bcc;
 
 	/**
+	 * Property with Subject of email
+	 *
 	 * @var string
 	 */
 	protected $subject;
 
 	/**
+	 * Property with Body of email
+	 *
 	 * @var string
 	 */
 	protected $body;
 
 	/**
+	 * Property with AltBody of email
+	 *
 	 * @var string
 	 */
 	protected $altBody;
 
 	/**
+	 * Property with path of body template for email body
+	 *
 	 * @var string
 	 */
 	protected $bodyTemplate;
 
 	/**
+	 * Property with path of alt body template for email body
+	 *
 	 * @var string
 	 */
 	protected $altBodyTemplate;
 
 	/**
+	 * Name fields of submitted form
+	 *
 	 * @var array
 	 */
 	protected $tokens;
 
 	/**
+	 * List of attachments
+	 *
 	 * @var array
 	 */
 	protected $attachments = [];
 
 	/**
+	 * List of attachments files
+	 *
 	 * @var array
 	 */
 	protected $files = [];
@@ -74,7 +98,7 @@ class MailMessage extends DataObject
 	/**
 	 * Message constructor.
 	 *
-	 * @param array $config
+	 * @param array $config User configs
 	 */
 	public function __construct(array $config)
 	{
@@ -97,6 +121,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email From
+	 *
 	 * @return EmailAddress
 	 */
 	public function getFrom()
@@ -105,6 +131,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email To
+	 *
 	 * @return EmailAddress[]
 	 */
 	public function getTo()
@@ -113,6 +141,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email CC
+	 *
 	 * @return EmailAddress[]
 	 */
 	public function getCc()
@@ -121,6 +151,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email Bcc
+	 *
 	 * @return EmailAddress[]
 	 */
 	public function getBcc()
@@ -129,6 +161,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email Subject
+	 *
 	 * @return mixed
 	 */
 	public function getSubject()
@@ -141,6 +175,8 @@ class MailMessage extends DataObject
 	}
 
 	/**
+	 * Getting email Body Template
+	 *
 	 * @return mixed
 	 */
 	public function getBodyTemplate()
@@ -148,17 +184,29 @@ class MailMessage extends DataObject
 		return $this->bodyTemplate;
 	}
 
+	/**
+	 * Getting email Alt Body Template
+	 *
+	 * @return string
+	 */
 	public function getAltBodyTemplate()
 	{
 		return $this->altBodyTemplate;
 	}
 
+	/**
+	 * Setting Tokens
+	 *
+	 * @param array $tokens Array of form field
+	 */
 	public function setTokens(array $tokens)
 	{
 		$this->tokens = $tokens;
 	}
 
 	/**
+	 * Getting email Body
+	 *
 	 * @return string|null
 	 */
 	public function getBody()
@@ -173,7 +221,7 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Get message alt body
+	 * Getting alt body of email message
 	 *
 	 * @return string
 	 */
@@ -187,7 +235,7 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Set attachments file
+	 * Setting attachments file
 	 *
 	 * @return bool
 	 */
@@ -199,7 +247,7 @@ class MailMessage extends DataObject
 			 *
 			 * @var File $file
 			 */
-			if (!$file->size > self::ATTACHMENTS_SIZE_LIMIT) {
+			if ($file->size < self::ATTACHMENTS_SIZE_LIMIT) {
 				$this->addFile([$file->uploadPath => $file->name]);
 			}
 		}
@@ -208,7 +256,7 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Get attachments file
+	 * Getting attachments file
 	 *
 	 * @return array
 	 */
@@ -218,9 +266,11 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * @param $data
+	 * Add EmailAttachments data to files array
+	 *
+	 * @param array $data File data with ['uploadPath' => name]
 	 */
-	protected function addFile($data)
+	protected function addFile(array $data)
 	{
 		$this->files[] = new EmailAttachment($data);
 	}

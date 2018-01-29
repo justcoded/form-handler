@@ -2,70 +2,98 @@
 
 namespace JustCoded\FormHandler\DataObjects;
 
-
+/**
+ * Class File
+ *
+ * @package JustCoded\FormHandler\DataObjects
+ */
 class File extends DataObject
 {
-    /**
-     * @var string
-     */
-    public $name;
+	/**
+	 * File name
+	 *
+	 * @var string
+	 */
+	public $name;
 
-    /**
-     * @var string
-     */
-    public $type;
+	/**
+	 * File type
+	 *
+	 * @var string
+	 */
+	public $type;
 
-    /**
-     * @var string
-     */
-    public $tmp_name;
+	/**
+	 * Temporary directory
+	 *
+	 * @var string
+	 */
+	public $tmp_name;
 
-    /**
-     * @var int
-     */
-    public $error;
+	/**
+	 * Error
+	 *
+	 * @var int
+	 */
+	public $error;
 
-    /**
-     * @var int
-     */
-    public $size;
+	/**
+	 * File size
+	 *
+	 * @var int
+	 */
+	public $size;
 
-    /**
-     * @var string
-     */
-    public $uniqName;
+	/**
+	 * Unique file name
+	 *
+	 * @var string
+	 */
+	public $uniqueName;
 
-    /**
-     * @var string
-     */
-    public $uploadUrl;
+	/**
+	 * Url path of file
+	 *
+	 * @var string
+	 */
+	public $uploadUrl;
 
-    /**
-     * @var string
-     */
-    public $uploadPath;
+	/**
+	 * Upload directory of file
+	 *
+	 * @var string
+	 */
+	public $uploadPath;
 
-    /**
-     * File constructor.
-     * @param array $config
-     */
-    public function __construct(array $config)
-    {
-        parent::__construct($config);
+	/**
+	 * File constructor.
+	 *
+	 * @param array $config Array of file data
+	 */
+	public function __construct(array $config)
+	{
+		parent::__construct($config);
 
-        $this->uniqName = sha1(uniqid(mt_rand(), true)) . '.' . $this->getExtension();
-    }
+		$this->uniqueName = sha1(uniqid(mt_rand(), true)) . '.' . $this->getExtension();
+	}
 
-    /**
-     * @return mixed
-     */
-    public function getExtension()
-    {
-        return pathinfo($this->name, PATHINFO_EXTENSION);
-    }
+	/**
+	 * Getting file extension
+	 *
+	 * @return mixed
+	 */
+	public function getExtension()
+	{
+		return pathinfo($this->name, PATHINFO_EXTENSION);
+	}
 
-    public function __toString()
-    {
-        return $this->uploadUrl;
-    }
+	/**
+	 * Magic method for template converting
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->uploadUrl;
+	}
 }

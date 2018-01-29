@@ -4,6 +4,11 @@ namespace JustCoded\FormHandler\Mailer;
 
 use JustCoded\FormHandler\Handlers\MailHandler;
 
+/**
+ * Class MailerFactory
+ *
+ * @package JustCoded\FormHandler\Mailer
+ */
 class MailerFactory
 {
 	/**

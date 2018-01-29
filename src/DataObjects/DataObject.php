@@ -2,8 +2,20 @@
 
 namespace JustCoded\FormHandler\DataObjects;
 
+/**
+ * Class DataObject
+ *
+ * @package JustCoded\FormHandler\DataObjects
+ */
 abstract class DataObject
 {
+	/**
+	 * DataObject constructor.
+	 *
+	 * @param array $config Abstrct array of user config
+	 *
+	 * @throws \Exception Exception.
+	 */
 	public function __construct(array $config)
 	{
 		foreach ($config as $key => $value) {
