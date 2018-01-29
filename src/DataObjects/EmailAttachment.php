@@ -4,16 +4,27 @@ namespace JustCoded\FormHandler\DataObjects;
 class EmailAttachment
 {
 	/**
+	 * Path of file attachments
+	 *
 	 * @var string
 	 */
 	protected $path;
 
 	/**
+	 * Name of file attachments
+	 *
 	 * @var string
 	 */
 	protected $name;
 
-	public function __construct($data)
+	/**
+	 * EmailAttachment constructor.
+	 *
+	 * @param array $data Email attachments data
+	 *
+	 * @throws \Exception Exception.
+	 */
+	public function __construct(array $data)
 	{
 		if (empty($data)) {
 			throw new \Exception('Attachments can\'t be blank');
@@ -37,6 +48,8 @@ class EmailAttachment
 	}
 
 	/**
+	 * Getting path of attachments
+	 *
 	 * @return string
 	 */
 	public function getPath()
@@ -45,6 +58,8 @@ class EmailAttachment
 	}
 
 	/**
+	 * Getting name of attachments
+	 *
 	 * @return string
 	 */
 	public function getName()

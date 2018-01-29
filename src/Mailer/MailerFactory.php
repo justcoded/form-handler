@@ -3,11 +3,23 @@
 namespace JustCoded\FormHandler\Mailer;
 
 use JustCoded\FormHandler\Handlers\MailHandler;
-use JustCoded\FormHandler\Mailer\PHPMailer;
 
+/**
+ * Class MailerFactory
+ *
+ * @package JustCoded\FormHandler\Mailer
+ */
 class MailerFactory
 {
-	public static function create($type, $config) {
+	/**
+	 * Creating Mailer
+	 *
+	 * @param string $type Type mailer
+	 * @param array $config Mailer config
+	 *
+	 * @return PHPMailer
+	 */
+	public static function create(string $type, array $config) {
 		switch ($type) {
 			case MailHandler::USE_PHPMAILER:
 				$mailer = new PHPMailer($config);

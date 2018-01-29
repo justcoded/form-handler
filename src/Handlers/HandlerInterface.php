@@ -4,7 +4,19 @@ namespace JustCoded\FormHandler\Handlers;
 
 interface HandlerInterface
 {
-    public function process(array $formFields);
+	/**
+	 * Form process
+	 *
+	 * @param array $formFields Form fields
+	 *
+	 * @return mixed
+	 */
+	public function process(array $formFields);
 
-    public function getErrors();
+	/**
+	 * Getting errors
+	 *
+	 * @return mixed
+	 */
+	public function getErrors();
 }

@@ -11,51 +11,70 @@ use PHPMailer\PHPMailer\Exception as PhpMailerException;
 class PHPMailer extends DataObject implements MailerInterface
 {
 	/**
+	 * The user's host
+	 *
 	 * @var string
 	 */
 	protected $host;
 
 	/**
+	 * User from user config
+	 *
 	 * @var string
 	 */
 	protected $user;
 
 	/**
+	 * Password from user config
+	 *
 	 * @var string
 	 */
 	protected $password;
 
 	/**
+	 * Protocol from user config
+	 *
 	 * @var string|bool
 	 */
 	protected $protocol = false;
 
 	/**
+	 * Port from user config
+	 *
 	 * @var string
 	 */
 	protected $port = 25;
 
 	/**
+	 * List of errors
+	 *
 	 * @var array
 	 */
 	protected $errors = array();
 
+	/**
+	 * Sending form
+	 *
+	 * @param MailMessage $message User message
+	 *
+	 * @return bool
+	 */
 	public function send(MailMessage $message)
 	{
 		$mail = new PHPMailerLib(true);               // Passing `true` enables exceptions.
 		try {
 			// Enable SMTP if host is set.
-			if ( ! empty($this->host)) {
+			if (!empty($this->host)) {
 				$mail->SMTPDebug = 0;
 				$mail->isSMTP();
 				$mail->Host = $this->host;
 				$mail->Port = $this->port;
-				if ( ! empty($this->user)) {
+				if (!empty($this->user)) {
 					$mail->SMTPAuth = true;
 					$mail->Username = $this->user;
 					$mail->Password = $this->password;
 				}
-				if ( ! empty($this->protocol)) {
+				if (!empty($this->protocol)) {
 					$mail->SMTPSecure = $this->protocol;
 				}
 			}
@@ -87,13 +106,17 @@ class PHPMailer extends DataObject implements MailerInterface
 
 			}
 
-            //Attachments
-            if ($attachments = $message->getFiles()) {
-                foreach ($attachments as $attachment) {
-                    /** @var EmailAttachment $attachment */
-                    $mail->addAttachment($attachment->getPath(), $attachment->getName());    // Optional name
-                }
-            }
+			// Attachments.
+			if ($attachments = $message->getFiles()) {
+				foreach ($attachments as $attachment) {
+					/**
+					 * Email attachments
+					 *
+					 * @var EmailAttachment $attachment
+					 */
+					$mail->addAttachment($attachment->getPath(), $attachment->getName()); // Optional name.
+				}
+			}
 
 			// Content.
 			$mail->Subject = $message->getSubject();
@@ -113,6 +136,11 @@ class PHPMailer extends DataObject implements MailerInterface
 		}
 	}
 
+	/**
+	 * Getting list of errors
+	 *
+	 * @return array
+	 */
 	public function getErrors()
 	{
 		return $this->errors;
