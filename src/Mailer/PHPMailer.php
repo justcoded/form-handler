@@ -114,7 +114,7 @@ class PHPMailer extends DataObject implements MailerInterface
 			}
 
 			// Attachments.
-			if ($attachments = $message->getTotalFilesSize()) {
+			if ($attachments = $message->getAttachments()) {
 				if ($message->getTotalFilesSize() < $this->attachmentsSizeLimit) {
 					foreach ($attachments as $attachment) {
 						/**

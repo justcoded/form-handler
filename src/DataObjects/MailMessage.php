@@ -253,4 +253,14 @@ class MailMessage extends DataObject
 		return $totalSize;
 	}
 
+	/**
+	 * Getting Attachments
+	 *
+	 * @return array
+	 */
+	public function getAttachments()
+	{
+		return $this->attachments;
+	}
+
 }
