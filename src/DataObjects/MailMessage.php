@@ -155,7 +155,7 @@ class MailMessage extends DataObject
 	/**
 	 * Getting email Subject
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getSubject()
 	{
@@ -169,7 +169,7 @@ class MailMessage extends DataObject
 	/**
 	 * Getting email Body Template
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getBodyTemplate()
 	{

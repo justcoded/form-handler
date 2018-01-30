@@ -13,21 +13,27 @@ use JustCoded\FormHandler\Handlers\MailHandler;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 
 $validation = [
-	'rules'  => [
-		'required' => [
-			'fields'  => ['name', 'email', 'subject', 'message'],
-			'message' => '{field} is required'
+	'fields' => [
+		'name' => ['required'],
+		'email' => ['required', 'email'],
+		'subject' => ['required'],
+		'message' => [
+			'required',
+			['lengthMin', 5]
 		],
-		'email'    => [
-			'fields'  => ['email'],
-			'message' => '{field} is not a valid email address'
+		'cv_file' => [
+			[
+				'required',
+				'message' => 'Please upload {field}',
+			],
+			[
+				'file',
+				['jpeg', 'jpg', 'png'], // types.
+				2000000, // size limit 2 MB.
+				'message' => '{field} should be up to 2MB and allows only file types jpeg, png.',
+			],
 		],
-		'file' => [
-			'fields' => ['cv_file', 'image_file'],
-			'allowType' => ['jpeg', 'jpg', 'pdf', 'png'],
-			'allowSize' => 10000000 // 10 MB
-		]
-	], // according to Valitron doc.
+	], // according to Valitron doc for mapFieldsRules.
 	'labels' => [
 		'name'  => 'Name',
 		'email' => 'Email address'
@@ -41,11 +47,12 @@ $mailerConfig = [
 	'password' => 'YOUR PASSWORD',
 	'protocol' => 'tls',
 	'port'     => 587,
+	'attachmentsSizeLimit' => 8000000, // around 8MB.
 ];
 
 $fileManager = new FileManager([
 	'uploadPath' => __DIR__ . '/attachments',
-	'uploadUrl' => $_SERVER['HTTP_ORIGIN'] . '/attachments',
+	'uploadUrl' => 'http://MY-DOMAIN.COM/attachments',
 ]);
 
 $message = [

@@ -4,7 +4,7 @@ namespace JustCoded\FormHandler;
 
 use JustCoded\FormHandler\Handlers\HandlerInterface;
 use Valitron\Validator;
-use JustCoded\FormHandler\Validator\File as FileValidator;
+use JustCoded\FormHandler\Validator\FileValidator;
 
 /**
  * Class FormHandler
@@ -58,6 +58,9 @@ class FormHandler
 	public function __construct(array $validationRules, HandlerInterface $handler, string $response = 'json')
 	{
 		$this->rules = $validationRules;
+		if (empty($this->rules['fields'])) {
+			throw new \Exception("You should specify 'fields' in validation array.");
+		}
 
 		$this->handler = $handler;
 
@@ -74,19 +77,12 @@ class FormHandler
 	public function validate(array $data)
 	{
 		$this->formFields = $data;
-		$v                = new Validator($data);
+		$v = $this->getValidator($data);
 
-		$v = FileValidator::validate($v, $this->rules);
-		// create rules from input array.
-		foreach ($this->rules['rules'] as $key => $params) {
-			$rule = $v->rule($key, $params['fields']);
-			if (!empty($params['message'])) {
-				$rule->message($params['message']);
-			}
-		}
+		$v->mapFieldsRules($this->rules['fields']);
 
 		// apply labels.
-		if (!empty($this->rules)) {
+		if (!empty($this->rules['labels'])) {
 			$v->labels($this->rules['labels']);
 		}
 
@@ -98,6 +94,23 @@ class FormHandler
 		}
 
 		return empty($this->errors);
+	}
+
+	/**
+	 * Create validator object with registered custom validators.
+	 *
+	 * @param array $data Data to validate.
+	 *
+	 * @return Validator
+	 */
+	public function getValidator($data)
+	{
+		$v = new Validator($data);
+
+		// register additional validators.
+		FileValidator::register($v);
+
+		return $v;
 	}
 
 	/**
