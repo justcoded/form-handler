@@ -88,13 +88,6 @@ class MailMessage extends DataObject
 	protected $attachments = [];
 
 	/**
-	 * List of attachments files
-	 *
-	 * @var array
-	 */
-	protected $files = [];
-
-	/**
 	 * Message constructor.
 	 *
 	 * @param array $config User configs
@@ -234,25 +227,6 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Setting attachments file
-	 *
-	 * @return bool
-	 */
-	public function setFiles()
-	{
-		foreach ($this->attachments as $file) {
-			/**
-			 * File object
-			 *
-			 * @var File $file
-			 */
-			$this->addFile($file);
-		}
-
-		return true;
-	}
-
-	/**
 	 * Getting attachments files
 	 *
 	 * @return File[]|null
@@ -260,16 +234,6 @@ class MailMessage extends DataObject
 	public function getAttachments()
 	{
 		return $this->attachments;
-	}
-
-	/**
-	 * Add files to array
-	 *
-	 * @param File $file File data with ['uploadPath' => name]
-	 */
-	protected function addFile(File $file)
-	{
-		$this->files[] = $file;
 	}
 
 	/**

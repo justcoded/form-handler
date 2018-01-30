@@ -3,11 +3,15 @@
 namespace JustCoded\FormHandler\Mailer;
 
 use JustCoded\FormHandler\DataObjects\DataObject;
-use JustCoded\FormHandler\DataObjects\File;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 use PHPMailer\PHPMailer\PHPMailer as PHPMailerLib;
 use PHPMailer\PHPMailer\Exception as PhpMailerException;
 
+/**
+ * Class PHPMailer
+ *
+ * @package JustCoded\FormHandler\Mailer
+ */
 class PHPMailer extends DataObject implements MailerInterface
 {
 	/**

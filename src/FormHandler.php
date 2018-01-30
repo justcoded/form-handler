@@ -100,6 +100,9 @@ class FormHandler
 		return empty($this->errors);
 	}
 
+	/**
+	 * Sending email by handler
+	 */
 	public function process()
 	{
 		$this->handler->process($this->formFields);

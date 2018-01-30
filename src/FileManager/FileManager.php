@@ -47,11 +47,6 @@ class FileManager extends DataObject
 
 				$name = preg_replace('/[^\00-\255]+/u', '', $file->name);
 				$name = str_replace('"', '', trim($name));
-				/**
-				 * File Object
-				 *
-				 * @var File $file
-				 */
 				$path = realpath($this->uploadPath) . '/' . $name . $file->uniqueName;
 
 				if ($file->error == 0 && move_uploaded_file($file->tmp_name, $path)) {
