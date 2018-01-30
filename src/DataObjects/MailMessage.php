@@ -9,7 +9,6 @@ namespace JustCoded\FormHandler\DataObjects;
  */
 class MailMessage extends DataObject
 {
-	const ATTACHMENTS_SIZE_LIMIT = 8000000;
 
 	/**
 	 * Property with From email
@@ -84,16 +83,9 @@ class MailMessage extends DataObject
 	/**
 	 * List of attachments
 	 *
-	 * @var array
+	 * @var File[]|null
 	 */
 	protected $attachments = [];
-
-	/**
-	 * List of attachments files
-	 *
-	 * @var array
-	 */
-	protected $files = [];
 
 	/**
 	 * Message constructor.
@@ -163,7 +155,7 @@ class MailMessage extends DataObject
 	/**
 	 * Getting email Subject
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getSubject()
 	{
@@ -177,7 +169,7 @@ class MailMessage extends DataObject
 	/**
 	 * Getting email Body Template
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getBodyTemplate()
 	{
@@ -235,44 +227,30 @@ class MailMessage extends DataObject
 	}
 
 	/**
-	 * Setting attachments file
+	 * Getting attachments files
 	 *
-	 * @return bool
+	 * @return File[]|null
 	 */
-	public function setFiles()
+	public function getAttachments()
 	{
-		foreach ($this->attachments as $file) {
-			/**
-			 * File object
-			 *
-			 * @var File $file
-			 */
-			if ($file->size < self::ATTACHMENTS_SIZE_LIMIT) {
-				$this->addFile([$file->uploadPath => $file->name]);
-			}
+		return $this->attachments;
+	}
+
+	/**
+	 * Getting total size of attached files
+	 */
+	public function getAttachmentsSize()
+	{
+		if (empty($this->attachments)) {
+			return 0;
 		}
 
-		return true;
-	}
+		$totalSize = 0;
+		foreach ($this->attachments as $file) {
+			$totalSize += $file->size;
+		}
 
-	/**
-	 * Getting attachments file
-	 *
-	 * @return array
-	 */
-	public function getFiles()
-	{
-		return $this->files;
-	}
-
-	/**
-	 * Add EmailAttachments data to files array
-	 *
-	 * @param array $data File data with ['uploadPath' => name]
-	 */
-	protected function addFile(array $data)
-	{
-		$this->files[] = new EmailAttachment($data);
+		return $totalSize;
 	}
 
 }
