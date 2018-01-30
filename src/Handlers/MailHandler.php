@@ -61,7 +61,6 @@ class MailHandler implements HandlerInterface
 	public function process(array $data)
 	{
 		$this->message->setTokens($data);
-		$this->message->setFiles();
 		$this->mailer->send($this->message);
 
 		return true;
