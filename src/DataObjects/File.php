@@ -88,6 +88,16 @@ class File extends DataObject
 	}
 
 	/**
+	 * Represent image in base64 encode format
+	 *
+	 * @return string
+	 */
+	public function getBase64()
+	{
+		return base64_encode(file_get_contents($this->uploadPath));
+	}
+
+	/**
 	 * Magic method for template converting
 	 *
 	 * @return string
