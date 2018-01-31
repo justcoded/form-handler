@@ -3,16 +3,20 @@
     <br>
 </p>
 
+This library allows you rapidly implement contact forms on your site.
+
 DIRECTORY STRUCTURE
 -------------------
 
-      examples/                
-        |-- attachments              
-        |-- form.php       
-        |-- template-html.php
-        |-- template-plain.php          
-      src/             
-      vendor/           
+      examples/                       contains application configurations 
+        |-- attachments                  contains attachments file
+        |-- form2email-basic.php         contains form handler sript that uses PHPMailer
+        |-- form2email-mandrill.php      contains form handler sript that uses Mandrill
+        |-- index.php                    contains test forms
+        |-- template-html.php            contains markup of email template
+        |-- template-plain.php           contains markup plain of email template
+      src/                           source code
+      vendor/                        contains dependent libraries
 
 INSTALLATION
 ------------
@@ -32,9 +36,9 @@ php composer.phar create-project --prefer-dist --stability=dev justcoded/form2em
 ~~~
 
 ## Contact form
-Create contact form with 'action' attribute where to send the form-data when a form is submitted.
+Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement multiple forms. 
 ```html
-<form action="/path/to/form.php" method="post" enctype="multipart/form-data">
+<form action="/path/to/form2email-basic.php" method="post" enctype="multipart/form-data">
     Name: <input type="text" name="name"><br>
     E-mail: <input type="text" name="email"><br>
     Subject: <input type="text" name="subject"><br>
@@ -48,10 +52,11 @@ Create contact form with 'action' attribute where to send the form-data when a f
 CONFIGURATION
 -------------
 All configuration files are located in the Example folder.
-In the action file (example/form.php), we must write a configuration of validation, mailer and message:
+In the action file (example/form2email-basic.php), we must write a configuration of validation, mailer and message:
+ For validation of text fields we use [Valetron](https://github.com/vlucas/valitron#built-in-validation-rules) library.
+ 
+```php
 
-```
-// For validation of text fields we use Valitron library (https://github.com/vlucas/valitron#built-in-validation-rules)
 // In the $validation array are listed the form fields and the corresponding rule and labels (not neccessery)
 
 $validation = [
@@ -112,5 +117,25 @@ $message = [
 ];
 ```
 ## Template
+You can customize the email templates. For example, in the file 'template-html.php':
 
+```html
+<html>
+<body>
+<p><b>Name:</b> {name}</p>
+<p><b>Email:</b> {email}</p>
+<p><b>Subject:</b> {subject}</p>
+<p><b>Message:</b><br>
+	{message}</p>
+<hr>
+<p>User IP address: <?php echo @$_SERVER['REMOTE_ADDR']; ?></p>
+<p>Browser: <?php echo @$_SERVER['HTTP_USER_AGENT']; ?></p>
 
+{cv_file}
+
+{image_file}
+
+</body>
+</html>
+```
+You can place the form fields anywhere. To do this, put the name of the form field in curly braces.
