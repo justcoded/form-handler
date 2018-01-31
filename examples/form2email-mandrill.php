@@ -40,21 +40,10 @@ $validation = [
 	] // according to Valitron doc.
 ];
 
-// PhpMailer config.
-/*$mailerConfig = [
-	'mailer'   => MailHandler::USE_MANDRILL, // (or USE_POSTMARKAPP, USE_MANDRILL)
-	'host'     => 'smtp.gmail.com',
-	'user'     => 'YOUR EMAIL',
-	'password' => 'YOUR PASSWORD',
-	'protocol' => 'tls',
-	'port'     => 587,
-	'attachmentsSizeLimit' => 8000000, // around 8MB.
-];*/
-
 // Mandrill config.
 $mailerConfig = [
 	'mailer'   => MailHandler::USE_MANDRILL, // (or USE_POSTMARKAPP, USE_MANDRILL)
-	'password' => '_5mPSvb39BQqnA7G_dOaAA',
+	'apiKey' => '_5mPSvb39BQqnA7G_dOaAA',
 	'attachmentsSizeLimit' => 8000000, // around 8MB.
 ];
 

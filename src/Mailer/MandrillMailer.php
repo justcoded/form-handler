@@ -34,7 +34,7 @@ class MandrillMailer extends DataObject implements MailerInterface
 	 *
 	 * @var string
 	 */
-	protected $password;
+	protected $apiKey;
 
 	/**
 	 * List of errors
@@ -53,49 +53,31 @@ class MandrillMailer extends DataObject implements MailerInterface
 	public function send(MailMessage $message)
 	{
 		try {
-			$mandrill = new Mandrill($this->password);
+			$mandrill = new Mandrill($this->apiKey);
 
 			$mandrillMessage = array(
 				'html' => $message->getBody(),
-				'text' => 'Example text content',
 				'subject' => $message->getSubject(),
 				'from_email' => $message->getFrom()->getEmail(),
 				'from_name' => $message->getFrom()->getName(),
 			);
 
 			// Recipients.
-			if ($to = $message->getTo()) {
-				$toArray = [];
-				foreach ($to as $address) {
-					$toArray[] = [
-						'email' => $address->getEmail(),
-						'name' => $address->getName(),
-						'type' => 'to'
+			$recipients = ['to' => $message->getTo(), 'cc' => $message->getCc(), 'bcc' => $message->getBcc()];
+
+			$to = [];
+			foreach ($recipients as $type => $emails) {
+				if (empty($emails)) continue;
+				foreach ($emails as $email) {
+					$to[] = [
+						'email' => $email->getEmail(),
+						'name' => $email->getName(),
+						'type' => $type
 					];
 				}
-
-				if ($cc = $message->getCc()) {
-					foreach ($cc as $address) {
-						$toArray[] = [
-							'email' => $address->getEmail(),
-							'name' => $address->getName(),
-							'type' => 'cc'
-						];
-					}
-				}
-
-				if ($bcc = $message->getBcc()) {
-					foreach ($bcc as $address) {
-						$toArray[] = [
-							'email' => $address->getEmail(),
-							'name' => $address->getName(),
-							'type' => 'bcc'
-						];
-					}
-				}
-
-				$mandrillMessage['to'] = $toArray;
 			}
+
+			$mandrillMessage['to'] = $to;
 
 			// Attachments.
 			if (0 < $message->getAttachmentsSize() && $message->getAttachmentsSize() < $this->attachmentsSizeLimit
@@ -113,10 +95,7 @@ class MandrillMailer extends DataObject implements MailerInterface
 				$mandrillMessage['attachments'] = $attachmentsArray;
 			}
 
-			$async = false;
-			$ip_pool = 'Main Pool';
-			$send_at = date('Y-m-d h:i:s');
-			$result = $mandrill->messages->send($mandrillMessage, $async, $ip_pool, $send_at);
+			$result = $mandrill->messages->send($mandrillMessage);
 
 			return $result;
 		} catch (Mandrill_Error $e) {
