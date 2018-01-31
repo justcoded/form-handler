@@ -6,6 +6,7 @@ use JustCoded\FormHandler\DataObjects\DataObject;
 use JustCoded\FormHandler\DataObjects\EmailAttachment;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 use Mandrill;
+use Mandrill_Error;
 
 /**
  * Class MandrillMailer
@@ -15,115 +16,120 @@ use Mandrill;
 class MandrillMailer extends DataObject implements MailerInterface
 {
 	/**
-	 * @var string
+	 * Attachments size limit
+	 *
+	 * @var int
 	 */
-	protected $host;
+	protected $attachmentsSizeLimit = 8000000;
 
 	/**
+	 * User from user config
+	 *
 	 * @var string
 	 */
 	protected $user;
 
 	/**
+	 * Password from user config
+	 *
 	 * @var string
 	 */
 	protected $password;
 
 	/**
-	 * @var string|bool
-	 */
-	protected $protocol = false;
-
-	/**
-	 * @var string
-	 */
-	protected $port = 25;
-
-	/**
+	 * List of errors
+	 *
 	 * @var array
 	 */
 	protected $errors = array();
 
 	/**
-	 * Your api key
+	 *  Sending form
 	 *
-	 * @var string
+	 * @param MailMessage $message Mailer message
+	 *
+	 * @return array|bool
 	 */
-	protected $apiKey;
-
 	public function send(MailMessage $message)
 	{
-		$mail = new Mandrill(true);               // Passing `true` enables exceptions.
 		try {
-			// Enable SMTP if host is set.
-			if ( ! empty($this->host)) {
-				$mail->SMTPDebug = 0;
-				$mail->isSMTP();
-				$mail->Host = $this->host;
-				$mail->Port = $this->port;
-				if ( ! empty($this->user)) {
-					$mail->SMTPAuth = true;
-					$mail->Username = $this->user;
-					$mail->Password = $this->password;
-				}
-				if ( ! empty($this->protocol)) {
-					$mail->SMTPSecure = $this->protocol;
-				}
-			}
+			$mandrill = new Mandrill($this->password);
 
-			// Set From.
-			if ($address = $message->getFrom()) {
-				$mail->setFrom($address->getEmail(), $address->getName());
-			}
+			$mandrillMessage = array(
+				'html' => $message->getBody(),
+				'text' => 'Example text content',
+				'subject' => $message->getSubject(),
+				'from_email' => $message->getFrom()->getEmail(),
+				'from_name' => $message->getFrom()->getName(),
+			);
 
 			// Recipients.
 			if ($to = $message->getTo()) {
+				$toArray = [];
 				foreach ($to as $address) {
-					$mail->addAddress($address->getEmail(), $address->getName());
+					$toArray[] = [
+						'email' => $address->getEmail(),
+						'name' => $address->getName(),
+						'type' => 'to'
+					];
 				}
 
-			}
-
-			if ($cc = $message->getCc()) {
-				foreach ($cc as $address) {
-					$mail->addCC($address->getEmail(), $address->getName());
+				if ($cc = $message->getCc()) {
+					foreach ($cc as $address) {
+						$toArray[] = [
+							'email' => $address->getEmail(),
+							'name' => $address->getName(),
+							'type' => 'cc'
+						];
+					}
 				}
 
-			}
-
-			if ($bcc = $message->getBcc()) {
-				foreach ($bcc as $address) {
-					$mail->addBCC($address->getEmail(), $address->getName());
+				if ($bcc = $message->getBcc()) {
+					foreach ($bcc as $address) {
+						$toArray[] = [
+							'email' => $address->getEmail(),
+							'name' => $address->getName(),
+							'type' => 'bcc'
+						];
+					}
 				}
 
+				$mandrillMessage['to'] = $toArray;
 			}
 
-            //Attachments
-            if ($attachments = $message->getFiles()) {
-                foreach ($attachments as $attachment) {
-                    /** @var EmailAttachment $attachment */
-                    $mail->addAttachment($attachment->getPath(), $attachment->getName());    // Optional name
-                }
-            }
+			// Attachments.
+			if (0 < $message->getAttachmentsSize() && $message->getAttachmentsSize() < $this->attachmentsSizeLimit
+				&& $attachments = $message->getAttachments()
+			) {
+				$attachmentsArray = [];
+				foreach ($attachments as $attachment) {
+					$attachmentsArray[] = [
+						'type' => $attachment->type,
+						'name' => $attachment->name,
+						'content' => $attachment->getBase64()
+					];
+				}
 
-			// Content.
-			$mail->Subject = $message->getSubject();
-			if ($body = $message->getBody()) {
-				$mail->isHTML(true);
-				$mail->Body    = $message->getBody();
-				$mail->AltBody = $message->getAltBody();
-			} else {
-				$mail->Body    = $message->getAltBody();
+				$mandrillMessage['attachments'] = $attachmentsArray;
 			}
 
-			$this->errors = array();
-			return $mail->send();
-		} catch (PhpMailerException $e) {
-			$this->errors[] = 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo;
+			$async = false;
+			$ip_pool = 'Main Pool';
+			$send_at = date('Y-m-d h:i:s');
+			$result = $mandrill->messages->send($mandrillMessage, $async, $ip_pool, $send_at);
+
+			return $result;
+		} catch (Mandrill_Error $e) {
+			$this->errors[] = 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
 			return false;
 		}
 	}
 
+	/**
+	 * Getting list of errors
+	 *
+	 * @return array
+	 */
 	public function getErrors()
 	{
 		return $this->errors;
