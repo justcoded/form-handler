@@ -63,7 +63,11 @@ class MandrillMailer extends DataObject implements MailerInterface
 			);
 
 			// Recipients.
-			$recipients = ['to' => $message->getTo(), 'cc' => $message->getCc(), 'bcc' => $message->getBcc()];
+			$recipients = [
+				'to' => $message->getTo(),
+				'cc' => $message->getCc(),
+				'bcc' => $message->getBcc()
+			];
 
 			$to = [];
 			foreach ($recipients as $type => $emails) {
