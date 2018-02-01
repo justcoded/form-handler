@@ -188,9 +188,11 @@ $validation = [
 ```
 ## 3. Template format:
 
-In the template add name of form field:
+In the template add name of generated form fields grouped by name. In our example the name is 'links':
 ```html
 ...
 {links}
 ...
 ```
+These fields will be render as a string, listed through a comma.
+For example: "value1, value2, value3, ..."
