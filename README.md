@@ -5,8 +5,7 @@
 
 This library allows you rapidly implement contact forms on your site.
 
-INSTALLATION
-------------
+## 1. Installation
 
 ### 1.1 Install via Composer (preferable)
 
