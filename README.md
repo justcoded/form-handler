@@ -202,3 +202,14 @@ In the template add name of generated form fields grouped by name. In our exampl
 ```
 These fields will be render as a string, listed through a comma.
 For example: "value1, value2, value3, ..."
+
+Response format
+---------------
+In case of successful:
+```json
+{"status":true,"errors":[]}
+```
+In case of error:
+```json
+{"status":false,"errors":["Error message"]}
+```
