@@ -8,7 +8,7 @@ This library allows you rapidly implement contact forms on your site.
 INSTALLATION
 ------------
 
-### 1. Install via Composer
+### 1.1 Install via Composer (Preferable)
 
 The recommended way to install Form2email is through
 [Composer](http://getcomposer.org).
@@ -19,8 +19,24 @@ at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 You can then install Form2email using the following command:
 
 ~~~
-composer require justcoded/form-handler
+1. Create folder 
+2. Create empty composer.json (if it doesn't exist)
+3. composer require justcoded/form-handler
 ~~~
+### 1.2 Install by download directly
+
+### 1.2.1 Clone the project
+~~~
+git clone https://github.com/justcoded/form-handler.git
+~~~
+### 1.2.2 Install dependency
+~~~
+cd form-handler
+
+composer install
+~~~
+
+
 
 ## 2. Contact form
 Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement 
@@ -43,7 +59,7 @@ multiple forms. You can find an example in the file examples/index.php
 You must create entry file handler for created contact form. To do this, copy the file 
 form2email-basic.php or form2email-mandrill.php from the Example folder to the root of the site. 
 Make sure that the file is accessible from the browser (for example: http://MY-DOMAIN.COM/path/to/form2email-basic.php).
-After that in the /path/to/form2email-basic.php file, include the path to the file form2email/vendor/autoload.php.
+After that in the /path/to/form2email-basic.php file, include the path to the file vendor/autoload.php.
 
 ```php
 // init autoload.
