@@ -205,7 +205,7 @@ For example: "value1, value2, value3, ..."
 
 Response format
 ---------------
-In case of successful:
+In case of success:
 ```json
 {"status":true,"errors":[]}
 ```
