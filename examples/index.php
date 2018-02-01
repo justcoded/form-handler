@@ -6,6 +6,11 @@
     E-mail: <input type="text" name="email"><br>
     Subject: <input type="text" name="subject"><br>
 	Message: <textarea name="message"></textarea>
+
+    <p><input class="text-field" type="text" name="links[]" id="link-1"></p>
+    <p><input class="text-field copy" type="text" name="links[]" id="link-2"></p>
+    <p><input class="text-field copy" type="text" name="links[]" id="link-3"></p>
+
     <p>File1:<input type="file" name="cv_file"></p>
     <p>File2:<input type="file" name="image_file"></p>
     <input type="submit">

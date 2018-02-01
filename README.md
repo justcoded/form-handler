@@ -5,19 +5,6 @@
 
 This library allows you rapidly implement contact forms on your site.
 
-DIRECTORY STRUCTURE
--------------------
-
-      examples/                       contains application configurations 
-        |-- attachments                  contains attachments file
-        |-- form2email-basic.php         contains form handler sript that uses PHPMailer
-        |-- form2email-mandrill.php      contains form handler sript that uses Mandrill
-        |-- index.php                    contains test forms
-        |-- template-html.php            contains markup of email template
-        |-- template-plain.php           contains markup plain of email template
-      src/                           source code
-      vendor/                        contains dependent libraries
-
 INSTALLATION
 ------------
 
@@ -32,7 +19,7 @@ at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 You can then install Form2email using the following command:
 
 ~~~
-php composer.phar create-project --prefer-dist --stability=dev justcoded/form2email my-project
+composer require justcoded/form-handler
 ~~~
 
 ## 2. Contact form
@@ -160,3 +147,34 @@ Creating another contact form
 -----------------------------
 
 You must create a new folder in the root of the site and make the steps(2-5) described above again.
+
+Validation of text field generated automatically
+------------------------------------------------
+
+## 1. Format of generated fields should be:
+```html
+    <input class="text-field" type="text" name="links[]" id="link-1">
+    <input class="text-field copy" type="text" name="links[]" id="link-2">
+    <input class="text-field copy" type="text" name="links[]" id="link-3">
+```
+
+## 2. Validation format:
+```php
+$validation = [
+    'fields' => [
+        ...,
+        'links.*' => ['url'], // or another rule
+    ],
+    'labels' => [
+        ...
+    ]
+];
+```
+## 3. Template format:
+
+In the template add name of form field:
+```html
+...
+{links}
+...
+```

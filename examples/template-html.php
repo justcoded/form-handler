@@ -17,5 +17,7 @@
 
 {image_file}
 
+{links}
+
 </body>
 </html>
