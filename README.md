@@ -19,8 +19,17 @@ You can then install Form2email using the following command:
 
 ~~~
 1. Create folder 
-2. Create empty composer.json (if it doesn't exist)
-3. composer require justcoded/form-handler
+2. Create composer.json file (if it doesn't exist) with json record:
+
+{
+    "require": {
+        "monolog/monolog": "1.0.*"
+    }
+}
+
+3. composer create-project 
+
+4. composer require justcoded/form-handler
 ~~~
 ### 1.2 Install by download directly (alternative)
 
@@ -34,8 +43,6 @@ cd form-handler
 
 composer install
 ~~~
-
-
 
 ## 2. Contact form
 Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement 
@@ -134,6 +141,7 @@ $message = [
     ])
 ];
 ```
+
 ## 5. Template
 You can customize the email templates. You can place the form fields anywhere. To do this, put the name of the form 
 field in curly braces. For example, in the file 'template-html.php':
@@ -160,7 +168,6 @@ field in curly braces. For example, in the file 'template-html.php':
 
 Creating another contact form
 -----------------------------
-
 You must create a new folder in the root of the site and make the steps(2-5) described above again.
 
 Validation of text field generated automatically
@@ -185,8 +192,8 @@ $validation = [
     ]
 ];
 ```
-## 3. Template format:
 
+## 3. Template format:
 In the template add name of generated form fields grouped by name. In our example the name is 'links':
 ```html
 ...
