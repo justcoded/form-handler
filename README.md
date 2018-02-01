@@ -21,7 +21,7 @@ DIRECTORY STRUCTURE
 INSTALLATION
 ------------
 
-### Install via Composer
+### 1. Install via Composer
 
 The recommended way to install Form2email is through
 [Composer](http://getcomposer.org).
@@ -35,8 +35,10 @@ You can then install Form2email using the following command:
 php composer.phar create-project --prefer-dist --stability=dev justcoded/form2email my-project
 ~~~
 
-## Contact form
-Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement multiple forms. 
+## 2. Contact form
+Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement 
+multiple forms. You can find an example in the file examples/index.php
+
 ```html
 <form action="/path/to/form2email-basic.php" method="post" enctype="multipart/form-data">
     Name: <input type="text" name="name"><br>
@@ -49,15 +51,28 @@ Create contact form with 'action' attribute where to send the form-data when a f
 </form>
 ```
 
-CONFIGURATION
--------------
-All configuration files are located in the Example folder.
-In the action file (example/form2email-basic.php), we must write a configuration of validation, mailer and message:
+## 3. Entry file
+
+You must create entry file handler for created contact form. To do this, copy the file 
+form2email-basic.php or form2email-mandrill.php from the Example folder to the root of the site. 
+Make sure that the file is accessible from the browser (for example: http://MY-DOMAIN.COM/path/to/form2email-basic.php).
+After that in the /path/to/form2email-basic.php file, include the path to the file form2email/vendor/autoload.php.
+
+```php
+// init autoload.
+require __DIR__ . '/../vendor/autoload.php';
+```
+
+## 4. Configuration
+
+In the action file (path/to/form2email-basic.php), we must write a configuration of validation, mailer and message:
  For validation of text fields we use [Valetron](https://github.com/vlucas/valitron#built-in-validation-rules) library.
  
 ```php
 
-// In the $validation array are listed the form fields and the corresponding rule and labels (not neccessery)
+// In the $validation array are listed the form fields and the corresponding rule 
+// and labels (not neccessery)
+
 
 $validation = [
     'fields' => [
@@ -97,7 +112,8 @@ $mailerConfig = [
     'attachmentsSizeLimit' => 8000000, // around 8MB.
 ];
 
-// Configure the location of attachments directory and set the write permission (chmod -R 777 path/to/directory)
+// Configure the location of attachments directory 
+// and set the write permission (chmod -R 777 path/to/directory)
 $fileManager = new FileManager([
     'uploadPath' => __DIR__ . '/attachments',
     'uploadUrl' => 'http://MY-DOMAIN.COM/attachments',
@@ -116,8 +132,9 @@ $message = [
     ])
 ];
 ```
-## Template
-You can customize the email templates. For example, in the file 'template-html.php':
+## 5. Template
+You can customize the email templates. You can place the form fields anywhere. To do this, put the name of the form 
+field in curly braces. For example, in the file 'template-html.php':
 
 ```html
 <html>
@@ -138,4 +155,8 @@ You can customize the email templates. For example, in the file 'template-html.p
 </body>
 </html>
 ```
-You can place the form fields anywhere. To do this, put the name of the form field in curly braces.
+
+Creating another contact form
+-----------------------------
+
+You must create a new folder in the root of the site and make the steps(2-5) described above again.

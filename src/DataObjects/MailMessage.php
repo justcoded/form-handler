@@ -100,7 +100,7 @@ class MailMessage extends DataObject
 			$this->from = new EmailAddress($this->from);
 		}
 
-		// convert recepients to Data objects.
+		// convert recipients to Data objects.
 		foreach (array('to', 'cc', 'bcc') as $key) {
 			if (!empty($this->$key)) {
 				$addresses = [];

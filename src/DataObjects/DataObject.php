@@ -12,7 +12,7 @@ abstract class DataObject
 	/**
 	 * DataObject constructor.
 	 *
-	 * @param array $config Abstrct array of user config
+	 * @param array $config Abstract array of user config
 	 *
 	 * @throws \Exception Exception.
 	 */
