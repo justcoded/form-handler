@@ -8,7 +8,7 @@ This library allows you rapidly implement contact forms on your site.
 INSTALLATION
 ------------
 
-### 1.1 Install via Composer (Preferable)
+### 1.1 Install via Composer (preferable)
 
 The recommended way to install Form2email is through
 [Composer](http://getcomposer.org).
@@ -23,7 +23,7 @@ You can then install Form2email using the following command:
 2. Create empty composer.json (if it doesn't exist)
 3. composer require justcoded/form-handler
 ~~~
-### 1.2 Install by download directly
+### 1.2 Install by download directly (alternative)
 
 ### 1.2.1 Clone the project
 ~~~
