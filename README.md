@@ -6,14 +6,14 @@ Small library to validate simple html forms data and send requests to email.
 Furthermore you can write your own "handler" to process valid data, for example if you need to save
  it through API to a 3d-party service like Mailchimp, SalesForce, CRM system, etc.).
 
-## Why FormHandler
+# Why FormHandler
 
 It's very easy to find some ready-to-use solution to process a contact form. Usually this is pure PHP
 script, which collect data and send email with php `mail()` function. It's not bad, but you can find
 numerous problems with such scripts:
 
 * `mail()` function can be blocked on production server, because it's not secure. Also it's often goes to SPAM folder, when you use `mail()` function.
-* You need to validate, that the data is valid. Manual validation of the `$_POST` array is time consuming and require knowledge of PHP, RegExp's knowledge etc. 
+* You need to validate, that the data is valid. Manual validation of the `$_POST` array is time consuming and require knowledge of PHP, RegExp's, etc. 
 
 We decide to create small library, which fix all these issues, so to process a form you need:
 
@@ -23,23 +23,19 @@ We decide to create small library, which fix all these issues, so to process a f
 
 And that's it!
 
-## Requirements
+# Requirements
 
 * PHP 7.0+
-* [Composer](http://getcomposer.org/)
+* [Composer](http://getcomposer.org/download)
+* Working SMTP server to send emails, or Mandrill account with configured mail domain.
 
-## Usage
+# Usage
 
 Imagine you have simple html website with a contact form and you want to process it.
 We have `name`, `email`, and `message` form fields.  
 We will guide you through the whole process of creating PHP script to process a form request.
 
-### Examples
-
-You can check working examples inside `examples` folder of the package, start your investigate from `index.php` file (contains forms HTML).
-There you can find which files loaded next, when you submit forms.
-
-### Init your environment
+## 1. Init your environment
 
 We suggest to create separate folder to place code into it. Let's call it `form`. 
 File structure will looks like this:
@@ -51,7 +47,7 @@ Inside `/form/` folder we need to create `composer.json` file to set our library
 
 	{
         "require": {
-            "justcoded/form-handler": "^1.0.*"
+            "justcoded/form-handler": "*"
         }
     }
 
@@ -59,7 +55,7 @@ Now we need to download all required files with a composer, by running a bash co
 
 	composer install
 
-### 3. Entry file
+## 2. Entry file
 
 You must create entry file, which will handle the form request. 
 You can copy one of our examples `examples/basic.php` or `examples/advanced.php` inside package folder.  
@@ -80,7 +76,7 @@ use JustCoded\FormHandler\DataObjects\MailMessage;
 use JustCoded\FormHandler\FileManager\FileManager;
 ```
 
-### 4. Form processing
+## 3. Form processing
 
 Form processing idea is super easy. We have main `FormHandler` object, which will validate data and 
 run some handler (right now we have only one Handler - email sender). And as the result we can get info
@@ -101,7 +97,7 @@ $result = $form->response();
 // TODO: do somethign with the results. For example write to a session and redirect back.
 ```
 
-### 5. Set Configurations
+## 4. Set Configurations
 
 As you can see above we need to set 3 configuration arrays:
 
@@ -109,7 +105,7 @@ As you can see above we need to set 3 configuration arrays:
 * `$mailerConfig` - defines mailer component (PHPMailer or Mailchimp) and it's params
 * `$messageConfig` - defines From/To/Body fields
 
-#### 5.1. Validation Rules
+### 4.1. Validation Rules
 
 For validation we use popular [Valitron](https://github.com/vlucas/valitron) PHP library. We use 
 `mapFieldsRules()` method to set fields rules and `labels()` method to set field labels to show
@@ -135,7 +131,7 @@ $validationRules = [
 ];
 ```
 
-#### 5.2. Mailer Config
+### 4.2. Mailer Config
 
 There are two options for Mailer: [PHPMailer](https://github.com/PHPMailer/PHPMailer) and implementation
 of [Mandrill API](https://mandrillapp.com/api/docs/).
@@ -163,9 +159,9 @@ $mailerConfig = [
 ];
 ```
 
-#### 5.3. Message configuration
+### 4.3. Message configuration
 
-Final configuration you have to set is options for your email: From, To addresses; Subject and Body.
+The latest configuration you have to set is options for your email: From, To addresses; Subject and Body.
 Optional you can set CC and BCC headers as well.
 
 Example:
@@ -182,16 +178,16 @@ $messageConfig = [
 ];
 ```
 
-For each address you can set numerous emails in such format:
+For each address field you can set numerous emails in such format:
 
 	[ email1 => name1, email2 => name2, ... ]
 	OR
 	[email1, email2, email3 ...]
 
-`bodyTemplate` and `altBodyTemplate` are path to usual PHP template files, which will be used to generate
-message body part.
+`bodyTemplate` and `altBodyTemplate` are paths to usual PHP template files, which will be used to generate
+email message (HTML and plain versions accordingly).
 
-### 6. All together
+## 5. All together
 
 If we combine all parts we can get file similar to this one:
 
@@ -256,7 +252,7 @@ exit;
 
 In this example we write errors to cookies to be able to get them on the HTML page via JavaScript or PHP code.
 
-### 7. Body templates
+## 6. Body templates
 
 Templates are usual PHP files, which can print any PHP code you leave inside. However to make editing
 easier we added tokens support. So any keys, which are passed as data to FormHandler can be used as a 
@@ -453,17 +449,17 @@ Some forms may have multiple fields, like checkboxes, multiple selects or dynami
 Example:
 
 ```html
-	<!-- multiple select -->
-	<select name="choice" multiple>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-	</select>
+<!-- multiple select -->
+<select name="choice" multiple>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+</select>
 
-	<!-- text inputs -->
-    <input type="text" name="links[]">
-    <input type="text" name="links[]">
-    <input type="text" name="links[]">
+<!-- text inputs -->
+<input type="text" name="links[]">
+<input type="text" name="links[]">
+<input type="text" name="links[]">
 ```
 
 You can validate each input using wildcard field name inside validation rules:
@@ -511,3 +507,8 @@ field in curly braces. For example, in the file 'template-html.php':
 </body>
 </html>
 ```
+
+# Examples
+
+You can check working examples inside `examples` folder of the package, start your investigate from `index.php` file (contains forms HTML).
+There you can find which files loaded next, when you submit forms.
