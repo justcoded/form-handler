@@ -1,50 +1,59 @@
 <p align="center">
-    <h1 align="center">Form2email</h1>
-    <br>
+    <h1 align="center">Static forms FormHandler library</h1>
 </p>
 
-This library allows you rapidly implement contact forms on your site.
+Small library to validate simple html forms data and send requests to email.
+Furthermore you can write your own "handler" to process valid data, for example if you need to save
+ it through API to a 3d-party service like Mailchimp, SalesForce, CRM system, etc.).
 
-## 1. Installation
+## Why FormHandler
 
-### 1.1 Install via Composer (preferable)
+It's very easy to find some ready-to-use solution to process a contact form. Usually this is pure PHP
+script, which collect data and send email with php `mail()` function. It's not bad, but you can find
+numerous problems with such scripts:
 
-The recommended way to install Form2email is through
-[Composer](http://getcomposer.org).
+* `mail()` function can be blocked on production server, because it's not secure. Also it's often goes to SPAM folder, when you use `mail()` function.
+* You need to validate, that the data is valid. Manual validation of the `$_POST` array is time consuming and require knowledge of PHP, RegExp's knowledge etc. 
 
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
+We decide to create small library, which fix all these issues, so to process a form you need:
 
-You can then install Form2email using the following command:
+* set validation rules with simple configuration array
+* set your Mail settings (SMTP settings OR Mandrill API key)
+* set your message params (From, To, Subject, Body template)
 
-~~~
-1. Create folder 
-2. Create composer.json file (if it doesn't exist) with json record:
+And that's it!
 
-{
-    "require": {
-        "monolog/monolog": "1.0.*"
+## Requirements
+
+* PHP 7.0+
+* [Composer](http://getcomposer.org/)
+
+## Usage
+
+Imagine you have simple html website with a contact form and you want to process it. We will guide you 
+through the whole process of creating PHP script to process a form request.
+
+### Init your environment
+
+We suggest to create separate folder to place code into it. Let's call it `form`. 
+File structure will looks like this:
+
+	|- /form/        # folder for our code
+	|- contact.php   # simple HTML page with a form
+
+Inside `/form/` folder we need to create `composer.json` file to set our library requirement:
+
+	{
+        "require": {
+            "justcoded/form-handler": "^1.0.*"
+        }
     }
-}
 
-3. composer create-project 
+Now we need to download all required files with a composer, by running a bash command:
 
-4. composer require justcoded/form-handler
-~~~
-### 1.2 Install by download directly (alternative)
+	composer install	
 
-### 1.2.1 Clone the project
-~~~
-git clone https://github.com/justcoded/form-handler.git
-~~~
-### 1.2.2 Install dependency
-~~~
-cd form-handler
-
-composer install
-~~~
-
-## 2. Contact form
+### 2. Contact form
 Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement 
 multiple forms. You can find an example in the file examples/index.php
 
@@ -60,7 +69,7 @@ multiple forms. You can find an example in the file examples/index.php
 </form>
 ```
 
-## 3. Entry file
+### 3. Entry file
 
 You must create entry file handler for created contact form. To do this, copy the file 
 form2email-basic.php or form2email-mandrill.php from the Example folder to the root of the site. 
@@ -72,7 +81,7 @@ After that in the /path/to/form2email-basic.php file, include the path to the fi
 require __DIR__ . '/../vendor/autoload.php';
 ```
 
-## 4. Configuration
+### 4. Configuration
 
 In the action file (path/to/form2email-basic.php), we must write a configuration of validation, mailer and message:
  For validation of text fields we use [Valetron](https://github.com/vlucas/valitron#built-in-validation-rules) library.
@@ -142,7 +151,7 @@ $message = [
 ];
 ```
 
-## 5. Template
+### 5. Template
 You can customize the email templates. You can place the form fields anywhere. To do this, put the name of the form 
 field in curly braces. For example, in the file 'template-html.php':
 
