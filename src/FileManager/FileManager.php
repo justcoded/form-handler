@@ -45,7 +45,7 @@ class FileManager extends DataObject
 				$fileField = $_FILES[$field];
 				$file = new File($fileField);
 
-				$name = preg_replace('/[^\00-\255]+/u', '', $file->name);
+				$name = preg_replace('/[^a-z0-9\-\_\.]+/iu', '', $file->name);
 				$name = str_replace('"', '', trim($name));
 				$path = realpath($this->uploadPath) . '/' . $name . $file->uniqueName;
 
