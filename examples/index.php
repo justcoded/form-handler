@@ -123,7 +123,7 @@ function print_errors($errors) {
 						Mail send.
 					</div>
 				<?php endif; ?>
-				<form action="advanced.php" method="post">
+				<form action="advanced.php" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="adv-name">Name</label>
 						<input type="text" name="name" class="form-control" id="adv-name" placeholder="Name">
