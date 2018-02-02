@@ -45,12 +45,12 @@ class FileManager extends DataObject
 				$fileField = $_FILES[$field];
 				$file = new File($fileField);
 
-				$name = preg_replace('/[^\00-\255]+/u', '', $file->name);
-				$name = str_replace('"', '', trim($name));
-				$path = realpath($this->uploadPath) . '/' . $name . $file->uniqueName;
+				$name = preg_replace('/[^a-z0-9\-\_\.]+/iu', '', trim($file->name));
+				$name = preg_replace('/(\.[a-z0-9]+)$/i', '', $name);
+				$path = realpath($this->uploadPath) . '/' . $name . '-' . $file->uniqueName;
 
 				if ($file->error == 0 && move_uploaded_file($file->tmp_name, $path)) {
-					$file->uploadUrl = $this->uploadUrl . '/' . $name . $file->uniqueName;
+					$file->uploadUrl = $this->uploadUrl . '/' . $name . '-' . $file->uniqueName;
 					$file->uploadPath = $path;
 					$_POST[$field] = $file;
 					$files[] = $file;
