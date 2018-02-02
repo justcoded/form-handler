@@ -462,7 +462,7 @@ Example:
 <input type="text" name="links[]">
 ```
 
-You can validate each input using wildcard field name inside validation rules:
+You can validate each input using wildcard field name inside **validation rules*:
 
 ```php
 $validationRules = [
@@ -476,36 +476,12 @@ $validationRules = [
 
 Same as file attachments you can use tokens to print all values at once. They will be comma separated.
 
-Template usage:
+**Template usage:**
 
 ```html
 ...
 <p>Choice: {choice}</p>
 <p>Links: {links}</p>
-```
-
-### 5. Template
-You can customize the email templates. You can place the form fields anywhere. To do this, put the name of the form 
-field in curly braces. For example, in the file 'template-html.php':
-
-```html
-<html>
-<body>
-<p><b>Name:</b> {name}</p>
-<p><b>Email:</b> {email}</p>
-<p><b>Subject:</b> {subject}</p>
-<p><b>Message:</b><br>
-	{message}</p>
-<hr>
-<p>User IP address: <?php echo @$_SERVER['REMOTE_ADDR']; ?></p>
-<p>Browser: <?php echo @$_SERVER['HTTP_USER_AGENT']; ?></p>
-
-{cv_file}
-
-{image_file}
-
-</body>
-</html>
 ```
 
 # Examples
