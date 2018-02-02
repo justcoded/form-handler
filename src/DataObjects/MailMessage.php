@@ -2,6 +2,9 @@
 
 namespace JustCoded\FormHandler\DataObjects;
 
+use function JustCoded\FormHandler\render_template;
+use function JustCoded\FormHandler\value_to_string;
+
 /**
  * Class MailMessage
  *
@@ -100,7 +103,7 @@ class MailMessage extends DataObject
 			$this->from = new EmailAddress($this->from);
 		}
 
-		// convert recepients to Data objects.
+		// convert recipients to Data objects.
 		foreach (array('to', 'cc', 'bcc') as $key) {
 			if (!empty($this->$key)) {
 				$addresses = [];
@@ -161,7 +164,7 @@ class MailMessage extends DataObject
 	{
 		$subject = $this->subject;
 		foreach ($this->tokens as $key => $value) {
-			$subject = str_replace('{' . $key . '}', $value, $subject);
+			$subject = str_replace('{' . $key . '}', value_to_string($value), $subject);
 		}
 		return $subject;
 	}

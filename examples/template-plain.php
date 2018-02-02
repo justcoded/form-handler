@@ -8,6 +8,9 @@ Message:
 
 	{message}
 
+{cv}
+{links}
+
 -------
 
 User IP address: <?php echo @$_SERVER['REMOTE_ADDR']; ?>

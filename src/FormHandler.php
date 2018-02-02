@@ -13,6 +13,9 @@ use JustCoded\FormHandler\Validator\FileValidator;
  */
 class FormHandler
 {
+	const RESPONSE_JSON  = 'json';
+	const RESPONSE_ARRAY = 'array';
+
 	/**
 	 * Form validation rules
 	 *
@@ -32,7 +35,7 @@ class FormHandler
 	 *
 	 * @var string
 	 */
-	protected $response;
+	protected $response_format;
 
 	/**
 	 * List of errors
@@ -51,9 +54,11 @@ class FormHandler
 	/**
 	 * FormHandler constructor.
 	 *
-	 * @param array $validationRules validation rules
-	 * @param HandlerInterface $handler Mailer
-	 * @param string $response Output format
+	 * @param array            $validationRules Validation rules.
+	 * @param HandlerInterface $handler Valid data processor.
+	 * @param string           $response Output format.
+	 *
+	 * @throws \Exception Validation rules are empty.
 	 */
 	public function __construct(array $validationRules, HandlerInterface $handler, string $response = 'json')
 	{
@@ -64,13 +69,13 @@ class FormHandler
 
 		$this->handler = $handler;
 
-		$this->response = $response;
+		$this->response_format = $response;
 	}
 
 	/**
 	 * Validate form data
 	 *
-	 * @param array $data Array with Global variaable _POST
+	 * @param array $data Usually data from $_POST or $_REQUEST.
 	 *
 	 * @return bool
 	 */
@@ -119,7 +124,7 @@ class FormHandler
 	public function process()
 	{
 		$this->handler->process($this->formFields);
-		$this->errors = $this->handler->getErrors();
+		$this->errors = array_filter(array($this->handler->getErrors()));
 	}
 
 	/**
@@ -129,9 +134,29 @@ class FormHandler
 	 */
 	public function response()
 	{
-		return [
+		return $this->formatResponse([
 			'status' => empty($this->errors),
 			'errors' => $this->errors
-		];
+		]);
+	}
+
+	/**
+	 * Format response according to response format.
+	 *
+	 * @param array $data Data to format.
+	 *
+	 * @return array|string Formatted data.
+	 */
+	public function formatResponse($data)
+	{
+		$response = null;
+		switch ($this->response_format) {
+			case static::RESPONSE_JSON:
+				$response = json_encode($data);
+				break;
+			default:
+				$response = $data;
+		}
+		return $response;
 	}
 }
