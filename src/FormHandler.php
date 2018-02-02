@@ -124,7 +124,7 @@ class FormHandler
 	public function process()
 	{
 		$this->handler->process($this->formFields);
-		$this->errors = $this->handler->getErrors();
+		$this->errors = array_filter(array($this->handler->getErrors()));
 	}
 
 	/**
