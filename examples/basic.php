@@ -7,7 +7,7 @@ use JustCoded\FormHandler\FormHandler;
 use JustCoded\FormHandler\Handlers\MailHandler;
 use JustCoded\FormHandler\DataObjects\MailMessage;
 
-$validation = [
+$validationRules = [
 	'fields' => [
 		'name' => ['required'],
 		'email' => ['required', 'email'],
@@ -34,7 +34,7 @@ $mailerConfig = [
 ];
 
 // Message settings.
-$message = [
+$messageConfig = [
 	'from' => ['FROM.EMAIL@DOMAIN.COM' => 'FROM NAME'],     // set correct FROM.
 	'to' => ['TO.EMAIL@DOMAIN.COM' => 'TO NAME'],           // set correct TO.
 	'subject' => 'Contact request from {name}',
@@ -43,14 +43,14 @@ $message = [
 ];
 
 // Run processing.
-$mailer = new MailHandler($mailerConfig, new MailMessage($message));
-$formHandler = new FormHandler($validation, $mailer);
+$mailer = new MailHandler($mailerConfig, new MailMessage($messageConfig));
+$form   = new FormHandler($validationRules, $mailer);
 
-if ($formHandler->validate($_POST)) {
-	$formHandler->process();
+if ($form->validate($_POST)) {
+	$form->process();
 }
 
 // write errors and return back.
-setcookie('basic_response', $formHandler->response());
+setcookie('basic_response', $form->response());
 header('Location: index.php');
 exit;

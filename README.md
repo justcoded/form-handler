@@ -30,8 +30,14 @@ And that's it!
 
 ## Usage
 
-Imagine you have simple html website with a contact form and you want to process it. We will guide you 
-through the whole process of creating PHP script to process a form request.
+Imagine you have simple html website with a contact form and you want to process it.
+We have `name`, `email`, and `message` form fields.  
+We will guide you through the whole process of creating PHP script to process a form request.
+
+### Examples
+
+You can check working examples inside `examples` folder of the package, start your investigate from `index.php` file (contains forms HTML).
+There you can find which files loaded next, when you submit forms.
 
 ### Init your environment
 
@@ -51,104 +57,435 @@ Inside `/form/` folder we need to create `composer.json` file to set our library
 
 Now we need to download all required files with a composer, by running a bash command:
 
-	composer install	
-
-### 2. Contact form
-Create contact form with 'action' attribute where to send the form-data when a form is submitted. You can implement 
-multiple forms. You can find an example in the file examples/index.php
-
-```html
-<form action="/path/to/form2email-basic.php" method="post" enctype="multipart/form-data">
-    Name: <input type="text" name="name"><br>
-    E-mail: <input type="text" name="email"><br>
-    Subject: <input type="text" name="subject"><br>
-	Message: <textarea name="message"></textarea>
-    <p>File1:<input type="file" name="cv_file"></p>
-    <p>File2:<input type="file" name="image_file"></p>
-    <input type="submit">
-</form>
-```
+	composer install
 
 ### 3. Entry file
 
-You must create entry file handler for created contact form. To do this, copy the file 
-form2email-basic.php or form2email-mandrill.php from the Example folder to the root of the site. 
-Make sure that the file is accessible from the browser (for example: http://MY-DOMAIN.COM/path/to/form2email-basic.php).
-After that in the /path/to/form2email-basic.php file, include the path to the file vendor/autoload.php.
+You must create entry file, which will handle the form request. 
+You can copy one of our examples `examples/basic.php` or `examples/advanced.php` inside package folder.  
+
+Let's call our file `form.php` and create it from scratch. 
+It should be accessible from browser (for example: `http://MY-DOMAIN.COM/form/form.php`).
+
+After that you need to include composer autoloader script and then set use part for library classes:
 
 ```php
+<?php
 // init autoload.
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
+
+use JustCoded\FormHandler\FormHandler;
+use JustCoded\FormHandler\Handlers\MailHandler;
+use JustCoded\FormHandler\DataObjects\MailMessage;
+use JustCoded\FormHandler\FileManager\FileManager;
 ```
 
-### 4. Configuration
+### 4. Form processing
 
-In the action file (path/to/form2email-basic.php), we must write a configuration of validation, mailer and message:
- For validation of text fields we use [Valetron](https://github.com/vlucas/valitron#built-in-validation-rules) library.
+Form processing idea is super easy. We have main `FormHandler` object, which will validate data and 
+run some handler (right now we have only one Handler - email sender). And as the result we can get info
+about errors found during the whole process.
+
+All this code is placed at the end of the `form.php` and looks like this:
+
+```php
+$mailer = new MailHandler($mailerConfig, new MailMessage($messageConfig));
+$form = new FormHandler($validationRules, $mailer);
+
+if ($form->validate($_POST)) {
+	$form->process();
+}
+
+$result = $form->response();
+
+// TODO: do somethign with the results. For example write to a session and redirect back.
+```
+
+### 5. Set Configurations
+
+As you can see above we need to set 3 configuration arrays:
+
+* `$validationRules` - defines validation rules and messages
+* `$mailerConfig` - defines mailer component (PHPMailer or Mailchimp) and it's params
+* `$messageConfig` - defines From/To/Body fields
+
+#### 5.1. Validation Rules
+
+For validation we use popular [Valitron](https://github.com/vlucas/valitron) PHP library. We use 
+`mapFieldsRules()` method to set fields rules and `labels()` method to set field labels to show
+error messages correctly. So what you need to do is to set `'fields'` and `'labels'` keys in 
+`$validationRules` array:
+
  
 ```php
-
-// In the $validation array are listed the form fields and the corresponding rule 
-// and labels (not neccessery)
-
-
-$validation = [
-    'fields' => [
-        'name' => ['required'],
-        'email' => ['required', 'email'],
-        'subject' => ['required'],
-        'message' => [
-            'required',
-            ['lengthMin', 5]
-        ],
-        'cv_file' => [
-            [
-                'required',
-                'message' => 'Please upload {field}',
-            ],
-            [
-                'file',
-                ['jpeg', 'jpg', 'png'], // types.
-                2000000, // size limit 2 MB.
-                'message' => '{field} should be up to 2MB and allows only file types jpeg, png.',
-            ],
-        ],
-    ], // according to Valitron doc for mapFieldsRules.
-    'labels' => [
-        'name'  => 'Name',
-        'email' => 'Email address'
-    ] // according to Valitron doc.
+$validationRules = [
+	'fields' => [
+		'name' => ['required'],
+		'email' => ['required', 'email'],
+		'message' => [
+			'required',
+			['lengthMin', 5]
+		],
+	], // according to Valitron doc for mapFieldsRules().
+	'labels' => [
+		'name'  => 'Name',
+		'email' => 'Email address',
+		'message' => 'Message',
+	] // according to Valitron doc for labels().
 ];
+```
 
+#### 5.2. Mailer Config
+
+There are two options for Mailer: [PHPMailer](https://github.com/PHPMailer/PHPMailer) and implementation
+of [Mandrill API](https://mandrillapp.com/api/docs/).
+
+* PHPMailer is used to send through `SMTP` protocol or PHP `mail()` function.
+* Mandrill API is used to send through [Mandrill](https://www.mandrill.com/) mail service using it's API.  
+
+Below you can find examples of configuration arrays for both methods:
+
+```php
+// PHPMailer config:
 $mailerConfig = [
-    'mailer'   => MailHandler::USE_PHPMAILER, // (or USE_POSTMARKAPP, USE_MANDRILL)
-    'host'     => 'smtp.gmail.com',
-    'user'     => 'YOUR EMAIL',
-    'password' => 'YOUR PASSWORD',
-    'protocol' => 'tls',
-    'port'     => 587,
-    'attachmentsSizeLimit' => 8000000, // around 8MB.
+	'mailer'   => MailHandler::USE_PHPMAILER,
+	'host'     => 'SMTP HOST',     // set your smtp host.
+	'user'     => 'YOUR EMAIL',    // set email.
+	'password' => 'YOUR PASSWORD', // set password.
+	'protocol' => 'tls',           // 'tls', 'ssl' or FALSE for not secure protocol/
+	'port'     => 587,             // your port.
 ];
 
-// Configure the location of attachments directory 
-// and set the write permission (chmod -R 777 path/to/directory)
-$fileManager = new FileManager([
-    'uploadPath' => __DIR__ . '/attachments',
-    'uploadUrl' => 'http://MY-DOMAIN.COM/attachments',
-]);
+// Mandrill config:
+$mailerConfig = [
+	'mailer'   => MailHandler::USE_MANDRILL,
+	'apiKey' => 'YOUR API KEY',  // set correct API KEY.
+];
+```
 
-$message = [
-    'from' => ['hello@justcoded.co.uk' => 'FROM NAME'],
-    'to' => ['kostant21@yahoo.com' => 'TO NAME'],
-    //	'cc'      => ['email' => 'name'],
-    //	'bcc'     => ['email' => 'name'],
+#### 5.3. Message configuration
+
+Final configuration you have to set is options for your email: From, To addresses; Subject and Body.
+Optional you can set CC and BCC headers as well.
+
+Example:
+
+```php
+$messageConfig = [
+    'from' => ['noreply@my-domain.com' => 'My Domain Support'],
+    'to' => ['admin@my-domain.com' => 'John Doe'],
+    'cc'      => ['cc-email@gmail.com', 'more-cc@gmail.com'],    // OPTIONAL
+    'bcc'     => ['bcc-email@gmail.com'],                        // OPTIONAL
     'subject' => 'Contact request from {name}',
-    'bodyTemplate' => __DIR__ . '/template-html.php', // Path to 
-    'altBodyTemplate' => __DIR__ . '/template-plain.php',
+    'bodyTemplate' => __DIR__ . '/template-html.php',        // Path to HTML template
+    'altBodyTemplate' => __DIR__ . '/template-plain.php',    // Path to TEXT template
+];
+```
+
+For each address you can set numerous emails in such format:
+
+	[ email1 => name1, email2 => name2, ... ]
+	OR
+	[email1, email2, email3 ...]
+
+`bodyTemplate` and `altBodyTemplate` are path to usual PHP template files, which will be used to generate
+message body part.
+
+### 6. All together
+
+If we combine all parts we can get file similar to this one:
+
+```php
+<?php
+
+// init autoload.
+require __DIR__ . '/../vendor/autoload.php';
+
+use JustCoded\FormHandler\FormHandler;
+use JustCoded\FormHandler\Handlers\MailHandler;
+use JustCoded\FormHandler\DataObjects\MailMessage;
+
+$validationRules = [
+	'fields' => [
+		'name' => ['required'],
+		'email' => ['required', 'email'],
+		'message' => [
+			'required',
+			['lengthMin', 5]
+		],
+	], // according to Valitron doc for mapFieldsRules.
+	'labels' => [
+		'name'  => 'Name',
+		'email' => 'Email address',
+		'message' => 'Message',
+	] // according to Valitron doc.
+];
+
+// SMTP config.
+$mailerConfig = [
+	'mailer'   => MailHandler::USE_PHPMAILER,
+	'host'     => 'SMTP HOST',     // set your smtp host.
+	'user'     => 'YOUR EMAIL',    // set email.
+	'password' => 'YOUR PASSWORD', // set password.
+	'protocol' => 'tls',           // 'tls', 'ssl' or FALSE for not secure protocol/
+	'port'     => 587,             // your port.
+];
+
+// Message settings.
+$messageConfig = [
+	'from' => ['FROM.EMAIL@DOMAIN.COM' => 'FROM NAME'],     // set correct FROM.
+	'to' => ['TO.EMAIL@DOMAIN.COM' => 'TO NAME'],           // set correct TO.
+	'subject' => 'Contact request from {name}',
+	'bodyTemplate' => __DIR__ . '/template-html.php',
+	'altBodyTemplate' => __DIR__ . '/template-plain.php',
+];
+
+// Run processing.
+$mailer = new MailHandler($mailerConfig, new MailMessage($messageConfig));
+$form   = new FormHandler($validationRules, $mailer);
+
+if ($form->validate($_POST)) {
+	$form->process();
+}
+
+// write errors and return back.
+setcookie('basic_response', $form->response());
+header('Location: index.php');
+exit;
+```
+
+In this example we write errors to cookies to be able to get them on the HTML page via JavaScript or PHP code.
+
+### 7. Body templates
+
+Templates are usual PHP files, which can print any PHP code you leave inside. However to make editing
+easier we added tokens support. So any keys, which are passed as data to FormHandler can be used as a 
+token like this: `{key}`.
+
+**template-html.php** example:
+```html
+<?php
+/* @var array $data */
+?>
+<html>
+<body>
+<p>Hi John,</p>
+<p>Someone submitted a contact form on your site with such data:</p>
+<p><b>Name:</b> {name}</p>
+<p><b>Email:</b> {email}</p>
+<p><b>Message:</b><br>
+	{message}</p>
+
+<hr>
+<p>User IP address: <?php echo @$_SERVER['REMOTE_ADDR']; ?></p>
+<p>Browser: <?php echo @$_SERVER['HTTP_USER_AGENT']; ?></p>
+
+</body>
+</html>
+``` 
+
+**template-plain.php** example:
+```php
+<?php
+/* @var array $data */
+?>
+Hi John,
+Someone submitted a contact form on your site with such data:
+
+Name:    {name}
+Email:   {email}
+Subject: {subject}
+Message:
+
+	{message}
+
+-------
+
+User IP address: <?php echo @$_SERVER['REMOTE_ADDR']; ?>
+Browser: <?php echo @$_SERVER['HTTP_USER_AGENT']; ?>
+```
+
+## Response formats
+
+FormHandler can return response as ARRAY or as JSON. By default it return a JSON string. 
+To change this behavior you need to add one more parameter to FormHandler object creation:
+
+```php
+$form   = new FormHandler($validationRules, $mailer, 'array');
+```  
+
+Once you get a response, you need to pass it to the page with a form to show errors. This can be done
+in several ways:
+
+### Pass response as JSON object
+
+We recommend to send form request with AJAX request. In this case you will need single JSON object as
+server side response:
+
+```php
+// print errors as json.
+header('Content-Type: application/json; charset=utf-8');
+echo $formHandler->response();
+exit;
+```
+
+### Pass response through COOKIES
+
+If you use cookies - you can use JavaScript to display errors on the site and don't need PHP knowledge
+in this case.
+
+```php
+// set cookie with form status/errors and redirect back
+setcookie('form_status', $form->response());
+header('Location: index.php');
+exit;
+```
+
+### Pass response through SESSION
+
+In case you want to process errors with PHP code - then better option of passing errors is using
+ a session:
+
+```php
+// start session if not started:
+session_start();
+// set sesson with form status/errors and redirect back
+$_SESSION['form_status'] = $form->response();
+header('Location: index.php');
+exit;
+```
+
+### Response array
+
+In case of success
+```json
+{"status":true,"errors":[]}
+```
+
+In case of errors:
+```json
+{"status":false,"errors":{"field1": ["Error1", "Error2"], "field2": ["Error3", "Error4"]}}
+```
+
+## File uploads and mail attachments
+
+Form handler also supports File uploads and sending them as email attachments.
+
+To add this feature you will need one more class, called `FileManager`:
+
+```php
+// Configure the location of attachments directory 
+// it should be writable and accessible from browser
+$fileManager = new FileManager([
+    'uploadPath' => __DIR__ . '/attachments',           // folder path to save files to 
+    'uploadUrl' => 'http://MY-DOMAIN.COM/attachments',  // site URL to this folder
+]);
+```
+
+After that you need to specify which files should be uploaded in `$messageConfig`:
+
+```php
+$messageConfig = [
+	'from' => ['FROM.EMAIL@DOMAIN.COM' => 'FROM NAME'],     // set correct FROM.
+	'to' => ['TO.EMAIL@DOMAIN.COM' => 'TO NAME'],           // set correct TO.
+	'subject' => 'Contact request from {name}',
+	'bodyTemplate' => __DIR__ . '/template-html.php',
+	'altBodyTemplate' => __DIR__ . '/template-plain.php',
+	
     'attachments' => $fileManager->upload([
-        'cv_file', 'image_file'
+        'input_file_name1', 'input_file_name2', // ...
     ])
 ];
+```
+
+`input_file_name1`, `input_file_name2` are the name attributes of file inputs:
+
+```html
+<input type="file" name="input_file_name1">
+<input type="file" name="input_file_name2">
+...
+```
+
+Of course each mail server has a limit of maximum attachments size. Usually it's not more than 10MB.
+To set this limit correctly you need to update `$mailerConfig` with additional option:
+
+```php
+$mailerConfig = [
+	'mailer'   => MailHandler::USE_PHPMAILER, // or USE_MANDRILL
+	...
+
+	'attachmentsSizeLimit' => 8388608, // 8MB in Bytes.
+];
+```
+
+All attachments are uploaded to the specified directory and we recommend to add links to them inside
+body/alternativeBody templates. To print file link to a file you need to write a token with input
+file name. Like this:
+
+```php
+...
+<p>Attachments: {input_file_name1}, {input_file_name2}</p>
+...
+```
+
+If you need to validate your file with specific type or size you can use our custom "file" validator:
+
+```php
+$validationRules = [
+	'fields' => [
+		// ...
+		'input_file_name1' => [  // this is file field.
+			[
+				'file',
+				['jpeg', 'jpg', 'png', 'pdf'], // types.
+				2000000,                       // size limit around 2 MB.
+				'message' => '{field} should be up to 2MB and allows only file types jpeg, png.',
+			],
+		],
+		...
+];
+```
+
+## Multiple fields
+
+Some forms may have multiple fields, like checkboxes, multiple selects or dynamically created inputs.
+
+Example:
+
+```html
+	<!-- multiple select -->
+	<select name="choice" multiple>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+	</select>
+
+	<!-- text inputs -->
+    <input type="text" name="links[]">
+    <input type="text" name="links[]">
+    <input type="text" name="links[]">
+```
+
+You can validate each input using wildcard field name inside validation rules:
+
+```php
+$validationRules = [
+	'fields' => [
+		// ...
+		'choice.*' => ['int'],
+		'links.*'  => ['url'],
+		...
+];
+```
+
+Same as file attachments you can use tokens to print all values at once. They will be comma separated.
+
+Template usage:
+
+```html
+...
+<p>Choice: {choice}</p>
+<p>Links: {links}</p>
 ```
 
 ### 5. Template
@@ -173,52 +510,4 @@ field in curly braces. For example, in the file 'template-html.php':
 
 </body>
 </html>
-```
-
-Creating another contact form
------------------------------
-You must create a new folder in the root of the site and make the steps(2-5) described above again.
-
-Validation of text field generated automatically
-------------------------------------------------
-
-## 1. Format of generated fields should be:
-```html
-    <input class="text-field" type="text" name="links[]" id="link-1">
-    <input class="text-field copy" type="text" name="links[]" id="link-2">
-    <input class="text-field copy" type="text" name="links[]" id="link-3">
-```
-
-## 2. Validation format:
-```php
-$validation = [
-    'fields' => [
-        ...,
-        'links.*' => ['url'], // or another rule
-    ],
-    'labels' => [
-        ...
-    ]
-];
-```
-
-## 3. Template format:
-In the template add name of generated form fields grouped by name. In our example the name is 'links':
-```html
-...
-{links}
-...
-```
-These fields will be render as a string, listed through a comma.
-For example: "value1, value2, value3, ..."
-
-Response format
----------------
-In case of success:
-```json
-{"status":true,"errors":[]}
-```
-In case of error:
-```json
-{"status":false,"errors":["Error message"]}
 ```

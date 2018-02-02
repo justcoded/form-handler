@@ -1,7 +1,6 @@
 <?php
 /* @var array $data */
 ?>
-
 <html>
 <body>
 <p><b>Name:</b> {name}</p>
