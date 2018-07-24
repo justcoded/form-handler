@@ -60,6 +60,7 @@ class MandrillMailer extends DataObject implements MailerInterface
 				'subject' => $message->getSubject(),
 				'from_email' => $message->getFrom()->getEmail(),
 				'from_name' => $message->getFrom()->getName(),
+				'headers' => ['Reply-To' => $message->getReplyTo()->getEmail()],
 			);
 
 			// Recipients.
@@ -71,7 +72,9 @@ class MandrillMailer extends DataObject implements MailerInterface
 
 			$to = [];
 			foreach ($recipients as $type => $emails) {
-				if (empty($emails)) continue;
+				if (empty($emails)) {
+					continue;
+				}
 				foreach ($emails as $email) {
 					$to[] = [
 						'email' => $email->getEmail(),
@@ -84,9 +87,7 @@ class MandrillMailer extends DataObject implements MailerInterface
 			$mandrillMessage['to'] = $to;
 
 			// Attachments.
-			if (0 < $message->getAttachmentsSize() && $message->getAttachmentsSize() < $this->attachmentsSizeLimit
-				&& $attachments = $message->getAttachments()
-			) {
+			if (0 < $message->getAttachmentsSize() && $message->getAttachmentsSize() < $this->attachmentsSizeLimit && $attachments = $message->getAttachments()) {
 				$attachmentsArray = [];
 				foreach ($attachments as $attachment) {
 					$attachmentsArray[] = [
