@@ -28,6 +28,13 @@ class MailMessage extends DataObject
 	protected $to;
 
 	/**
+	 * Property with Reply-To email
+	 *
+	 * @var EmailAddress
+	 */
+	protected $replyTo;
+
+	/**
 	 * Property with Cc email
 	 *
 	 * @var EmailAddress[]
@@ -102,6 +109,9 @@ class MailMessage extends DataObject
 		if ($this->from) {
 			$this->from = new EmailAddress($this->from);
 		}
+		if ($this->replyTo) {
+			$this->replyTo = new EmailAddress($this->replyTo);
+		}
 
 		// convert recipients to Data objects.
 		foreach (array('to', 'cc', 'bcc') as $key) {
@@ -133,6 +143,16 @@ class MailMessage extends DataObject
 	public function getTo()
 	{
 		return $this->to;
+	}
+
+	/**
+	 * Getting email Reply To
+	 *
+	 * @return EmailAddress
+	 */
+	public function getReplyTo()
+	{
+		return $this->replyTo;
 	}
 
 	/**

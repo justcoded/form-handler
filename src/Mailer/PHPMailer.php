@@ -95,6 +95,11 @@ class PHPMailer extends DataObject implements MailerInterface
 				$mail->setFrom($address->getEmail(), $address->getName());
 			}
 
+			// Set Reply To.
+			if ($replyTo = $message->getReplyTo()) {
+				$mail->addReplyTo($replyTo->getEmail(), $replyTo->getName());
+			}
+
 			// Recipients.
 			if ($to = $message->getTo()) {
 				foreach ($to as $address) {
