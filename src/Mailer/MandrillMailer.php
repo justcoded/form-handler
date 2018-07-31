@@ -56,22 +56,23 @@ class MandrillMailer extends DataObject implements MailerInterface
 			$mandrill = new Mandrill($this->apiKey);
 
 			$mandrillMessage = array(
-				'html' => $message->getBody(),
-				'subject' => $message->getSubject(),
+				'html'       => $message->getBody(),
+				'subject'    => $message->getSubject(),
 				'from_email' => $message->getFrom()->getEmail(),
-				'from_name' => $message->getFrom()->getName(),
+				'from_name'  => $message->getFrom()->getName(),
 			);
-			
-			$replyTo=$message->getReplyTo();
-			if(!empty($replyTo)) {
-				$mandrillMessage['headers']=['Reply-To' => $replyTo->getEmail()];
+
+			if ($replyTo = $message->getReplyTo()) {
+				$mandrillMessage['headers'] = [
+					'Reply-To' => $replyTo->getEmail(),
+				];
 			}
 
 			// Recipients.
 			$recipients = [
-				'to' => $message->getTo(),
-				'cc' => $message->getCc(),
-				'bcc' => $message->getBcc()
+				'to'  => $message->getTo(),
+				'cc'  => $message->getCc(),
+				'bcc' => $message->getBcc(),
 			];
 
 			$to = [];
@@ -82,8 +83,8 @@ class MandrillMailer extends DataObject implements MailerInterface
 				foreach ($emails as $email) {
 					$to[] = [
 						'email' => $email->getEmail(),
-						'name' => $email->getName(),
-						'type' => $type
+						'name'  => $email->getName(),
+						'type'  => $type,
 					];
 				}
 			}
@@ -92,14 +93,14 @@ class MandrillMailer extends DataObject implements MailerInterface
 
 			// Attachments.
 			if (0 < $message->getAttachmentsSize() && $message->getAttachmentsSize() < $this->attachmentsSizeLimit
-			    && $attachments = $message->getAttachments()
+				&& $attachments = $message->getAttachments()
 			) {
 				$attachmentsArray = [];
 				foreach ($attachments as $attachment) {
 					$attachmentsArray[] = [
-						'type' => $attachment->type,
-						'name' => $attachment->name,
-						'content' => $attachment->getBase64()
+						'type'    => $attachment->type,
+						'name'    => $attachment->name,
+						'content' => $attachment->getBase64(),
 					];
 				}
 
@@ -111,6 +112,7 @@ class MandrillMailer extends DataObject implements MailerInterface
 			return $result;
 		} catch (Mandrill_Error $e) {
 			$this->errors[] = 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
+
 			return false;
 		}
 	}

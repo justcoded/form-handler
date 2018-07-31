@@ -75,17 +75,17 @@ class PHPMailer extends DataObject implements MailerInterface
 		$mail = new PHPMailerLib(true);               // Passing `true` enables exceptions.
 		try {
 			// Enable SMTP if host is set.
-			if (!empty($this->host)) {
+			if (! empty($this->host)) {
 				$mail->SMTPDebug = 0;
 				$mail->isSMTP();
 				$mail->Host = $this->host;
 				$mail->Port = $this->port;
-				if (!empty($this->user)) {
+				if (! empty($this->user)) {
 					$mail->SMTPAuth = true;
 					$mail->Username = $this->user;
 					$mail->Password = $this->password;
 				}
-				if (!empty($this->protocol)) {
+				if (! empty($this->protocol)) {
 					$mail->SMTPSecure = $this->protocol;
 				}
 			}
@@ -138,13 +138,15 @@ class PHPMailer extends DataObject implements MailerInterface
 				$mail->Body    = $message->getBody();
 				$mail->AltBody = $message->getAltBody();
 			} else {
-				$mail->Body    = $message->getAltBody();
+				$mail->Body = $message->getAltBody();
 			}
 
 			$this->errors = array();
+
 			return $mail->send();
 		} catch (PhpMailerException $e) {
 			$this->errors[] = 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo;
+
 			return false;
 		}
 	}

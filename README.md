@@ -170,6 +170,7 @@ Example:
 $messageConfig = [
     'from' => ['noreply@my-domain.com' => 'My Domain Support'],
     'to' => ['admin@my-domain.com' => 'John Doe'],
+    'replyTo' => ['REPLY.EMAIL@DOMAIN.COM' => 'REPLY NAME'],     // OPTIONAL
     'cc'      => ['cc-email@gmail.com', 'more-cc@gmail.com'],    // OPTIONAL
     'bcc'     => ['bcc-email@gmail.com'],                        // OPTIONAL
     'subject' => 'Contact request from {name}',
@@ -231,6 +232,7 @@ $mailerConfig = [
 $messageConfig = [
 	'from' => ['FROM.EMAIL@DOMAIN.COM' => 'FROM NAME'],     // set correct FROM.
 	'to' => ['TO.EMAIL@DOMAIN.COM' => 'TO NAME'],           // set correct TO.
+	'replyTo' => ['REPLY.EMAIL@DOMAIN.COM' => 'REPLY NAME'],// set correct REPLY.
 	'subject' => 'Contact request from {name}',
 	'bodyTemplate' => __DIR__ . '/template-html.php',
 	'altBodyTemplate' => __DIR__ . '/template-plain.php',
@@ -384,6 +386,7 @@ After that you need to specify which files should be uploaded in `$messageConfig
 $messageConfig = [
 	'from' => ['FROM.EMAIL@DOMAIN.COM' => 'FROM NAME'],     // set correct FROM.
 	'to' => ['TO.EMAIL@DOMAIN.COM' => 'TO NAME'],           // set correct TO.
+	'replyTo' => ['REPLY.EMAIL@DOMAIN.COM' => 'REPLY NAME'],// set correct REPLY.
 	'subject' => 'Contact request from {name}',
 	'bodyTemplate' => __DIR__ . '/template-html.php',
 	'altBodyTemplate' => __DIR__ . '/template-plain.php',
